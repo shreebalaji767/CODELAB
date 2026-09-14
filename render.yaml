@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: code-lab
+    name: codelab
     runtime: docker
     plan: free
     healthCheckPath: /health
