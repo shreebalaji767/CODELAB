@@ -19,267 +19,222 @@
 
 </head>
 
-
 <body>
 
 <div class="app">
 
+<header class="topbar">
 
-    <!-- =====================================================
-         TOP BAR
-         ===================================================== -->
+    <div class="brand">
 
-    <header class="topbar">
+        <div class="brand-icon">
+            &lt;/&gt;
+        </div>
 
-        <div class="brand">
+        <div>
 
-            <div class="brand-icon">
-                &lt;/&gt;
+            <div class="brand-name">
+                CodeLab
             </div>
 
-            <div>
-                <div class="brand-name">
-                    CodeLab
-                </div>
-
-                <div class="brand-subtitle">
-                    Online Coding Laboratory
-                </div>
+            <div class="brand-subtitle">
+                Online Coding Laboratory
             </div>
 
-        </div>
-
-
-        <div class="top-actions">
-
-            <span
-                id="status"
-                class="status"
-            >
-                Ready
-            </span>
-
-            <button
-                id="run"
-                class="btn btn-run"
-            >
-                ▶ Run
-            </button>
-
-        </div>
-
-    </header>
-
-
-    <!-- =====================================================
-         LANGUAGE BAR
-         ===================================================== -->
-
-    <div class="language-bar">
-
-        <div class="language-left">
-
-            <label for="language">
-                Language
-            </label>
-
-            <select id="language">
-
-                <option value="python">
-                    Python
-                </option>
-
-                <option value="html">
-                    HTML
-                </option>
-
-                <option value="css">
-                    CSS
-                </option>
-
-                <option value="javascript">
-                    JavaScript
-                </option>
-
-                <option value="c">
-                    C
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="shortcut">
-            Ctrl + Enter = Run
         </div>
 
     </div>
 
 
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
+    <div class="top-actions">
 
-    <main class="workspace">
-
-
-        <!-- =================================================
-             LEFT SIDE
-             ================================================= -->
-
-        <section class="editor-panel">
-
-
-            <div class="panel-header">
-
-                <div>
-                    <span class="panel-title">
-                        Code Editor
-                    </span>
-                </div>
-
-
-                <div class="editor-actions">
-
-                    <button
-                        id="reset"
-                        class="small-btn"
-                    >
-                        Reset
-                    </button>
-
-                    <button
-                        id="clear"
-                        class="small-btn"
-                    >
-                        Clear
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="editor-wrapper">
-
-                <textarea
-                    id="code"
-                    spellcheck="false"
-                    autocomplete="off"
-                    autocorrect="off"
-                    autocapitalize="off"
-                ></textarea>
-
-            </div>
-
-
-            <!-- =============================================
-                 INPUT
-                 ============================================= -->
-
-            <div class="input-section">
-
-                <div class="section-title">
-                    Program Input
-                </div>
-
-                <div class="section-help">
-                    Enter input here for Python input() and
-                    C scanf().
-                </div>
-
-                <textarea
-                    id="stdin"
-                    class="input-box"
-                    spellcheck="false"
-                    placeholder="Example:
-Shree
-25"
-                ></textarea>
-
-            </div>
-
-
-        </section>
-
-
-        <!-- =================================================
-             RIGHT SIDE
-             ================================================= -->
-
-        <section class="right-panel">
-
-
-            <!-- =============================================
-                 OUTPUT
-                 ============================================= -->
-
-            <div class="output-panel">
-
-                <div class="panel-header">
-
-                    <span class="panel-title">
-                        Output
-                    </span>
-
-                </div>
-
-                <pre
-                    id="output"
-                    class="output"
-                ></pre>
-
-            </div>
-
-
-            <!-- =============================================
-                 PREVIEW
-                 ============================================= -->
-
-            <div class="preview-panel">
-
-                <div class="panel-header">
-
-                    <span class="panel-title">
-                        Browser Preview
-                    </span>
-
-                </div>
-
-                <iframe
-                    id="preview"
-                    title="Browser Preview"
-                    sandbox="allow-scripts"
-                ></iframe>
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
-
-    <footer class="footer">
-
-        <div>
-            CodeLab
-        </div>
-
-        <div
-            id="runtime"
-            class="runtime"
+        <span
+            id="status"
+            class="status"
         >
-            Checking runtimes...
+            Ready
+        </span>
+
+        <button
+            id="run"
+            class="btn btn-run"
+        >
+            ▶ Run
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="language-bar">
+
+    <div class="language-left">
+
+        <label for="language">
+            Language
+        </label>
+
+        <select id="language">
+
+            <option value="python">
+                Python
+            </option>
+
+            <option value="html">
+                HTML
+            </option>
+
+            <option value="css">
+                CSS
+            </option>
+
+            <option value="javascript">
+                JavaScript
+            </option>
+
+            <option value="c">
+                C
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="shortcut">
+        Ctrl + Enter = Run
+    </div>
+
+</div>
+
+
+<main class="workspace">
+
+
+<section class="editor-panel">
+
+    <div class="panel-header">
+
+        <span class="panel-title">
+            Code Editor
+        </span>
+
+        <div class="editor-actions">
+
+            <button
+                id="reset"
+                class="small-btn"
+            >
+                Reset
+            </button>
+
+            <button
+                id="clear"
+                class="small-btn"
+            >
+                Clear
+            </button>
+
         </div>
 
-    </footer>
+    </div>
+
+
+    <div class="editor-wrapper">
+
+        <textarea
+            id="code"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+        ></textarea>
+
+    </div>
+
+
+    <div class="input-section">
+
+        <div class="section-title">
+            Program Input
+        </div>
+
+        <div class="section-help">
+            Used by Python input() and C scanf().
+        </div>
+
+        <textarea
+            id="stdin"
+            class="input-box"
+            spellcheck="false"
+            placeholder="Enter program input here..."
+        ></textarea>
+
+    </div>
+
+</section>
+
+
+<section class="right-panel">
+
+
+    <div class="output-panel">
+
+        <div class="panel-header">
+
+            <span class="panel-title">
+                Output
+            </span>
+
+        </div>
+
+        <pre
+            id="output"
+            class="output"
+        ></pre>
+
+    </div>
+
+
+    <div class="preview-panel">
+
+        <div class="panel-header">
+
+            <span class="panel-title">
+                Browser Preview
+            </span>
+
+        </div>
+
+        <iframe
+            id="preview"
+            title="Browser Preview"
+            sandbox="allow-scripts"
+        ></iframe>
+
+    </div>
+
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+    <span>
+        CodeLab
+    </span>
+
+    <span
+        id="runtime"
+        class="runtime"
+    >
+        Checking runtimes...
+    </span>
+
+</footer>
 
 
 </div>
