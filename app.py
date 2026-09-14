@@ -1,50 +1,295 @@
-import os, subprocess, tempfile
-from flask import Flask, render_template, request, jsonify
-app=Flask(__name__)
-MAX_CODE=50000
-TIMEOUT=5
+import os
+import subprocess
+import tempfile
+from flask import Flask, jsonify, render_template, request
 
-def run_cmd(cmd, stdin='', cwd=None):
+app = Flask(__name__)
+
+MAX_CODE_SIZE = 50_000
+MAX_INPUT_SIZE = 20_000
+TIMEOUT_SECONDS = 5
+MAX_OUTPUT_SIZE = 50_000
+
+
+def limit_output(text):
+    if text is None:
+        return ""
+
+    if len(text) > MAX_OUTPUT_SIZE:
+        return text[:MAX_OUTPUT_SIZE] + "\n\n[Output truncated]"
+
+    return text
+
+
+def run_process(command, stdin_text=""):
     try:
-        p=subprocess.run(cmd,input=stdin,text=True,capture_output=True,cwd=cwd,timeout=TIMEOUT,start_new_session=True)
-        return {'output':p.stdout[-100000:],'error':p.stderr[-100000:],'exit_code':p.returncode}
-    except subprocess.TimeoutExpired:
-        return {'output':'','error':f'Execution timed out after {TIMEOUT} seconds.','exit_code':124}
+        result = subprocess.run(
+            command,
+            input=stdin_text,
+            text=True,
+            capture_output=True,
+            timeout=TIMEOUT_SECONDS,
+            cwd="/tmp"
+        )
+
+        stdout = limit_output(result.stdout)
+        stderr = limit_output(result.stderr)
+
+        if result.returncode != 0:
+            if stderr:
+                return stdout, stderr, result.returncode
+
+            return stdout, f"Process exited with code {result.returncode}", result.returncode
+
+        return stdout, stderr, 0
+
+    except subprocess.TimeoutExpired as e:
+        stdout = e.stdout or ""
+        stderr = e.stderr or ""
+
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode("utf-8", errors="replace")
+
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode("utf-8", errors="replace")
+
+        return (
+            limit_output(stdout),
+            limit_output(stderr) + "\n\nExecution timed out.",
+            -1
+        )
+
     except Exception as e:
-        return {'output':'','error':str(e),'exit_code':1}
+        return "", str(e), -1
 
-@app.get('/')
-def home(): return render_template('index.html')
-@app.get('/health')
-def health(): return jsonify(status='ok')
 
-@app.post('/api/run')
-def run():
-    d=request.get_json(silent=True) or {}; lang=d.get('language'); code=d.get('code',''); stdin=d.get('stdin','')
-    if not isinstance(code,str) or len(code)>MAX_CODE: return jsonify(output='',error='Invalid or oversized code.',exit_code=1),400
-    if lang=='python': return jsonify(run_cmd(['python3','-I','-S','-c',code],stdin))
-    if lang=='javascript': return jsonify(run_cmd(['node','--use-strict','-e',code],stdin))
-    if lang=='sql':
-        with tempfile.TemporaryDirectory() as td:
-            db=os.path.join(td,'lab.db')
-            return jsonify(run_cmd(['sqlite3','-header','-column',db],code))
-    if lang=='c':
-        with tempfile.TemporaryDirectory() as td:
-            src=os.path.join(td,'main.c'); exe=os.path.join(td,'program')
-            open(src,'w',encoding='utf-8').write(code)
-            comp=run_cmd(['gcc','-std=c17','-O0','-Wall',src,'-o',exe])
-            if comp['exit_code']!=0: return jsonify(comp)
-            return jsonify(run_cmd([exe],stdin))
-    return jsonify(output='',error='Unsupported language.',exit_code=1),400
+def validate_code(code):
+    if not isinstance(code, str):
+        return False, "Invalid code."
 
-@app.post('/api/check')
-def check():
-    out={}
-    for n,c in {'python':['python3','--version'],'javascript':['node','--version'],'c':['gcc','--version'],'sql':['sqlite3','--version']}.items():
+    if len(code.encode("utf-8")) > MAX_CODE_SIZE:
+        return False, "Code is too large. Maximum size is 50 KB."
+
+    return True, ""
+
+
+def validate_input(stdin_text):
+    if not isinstance(stdin_text, str):
+        return False, "Invalid input."
+
+    if len(stdin_text.encode("utf-8")) > MAX_INPUT_SIZE:
+        return False, "Input is too large. Maximum size is 20 KB."
+
+    return True, ""
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/health")
+def health():
+    return jsonify({
+        "status": "ok"
+    })
+
+
+@app.route("/api/run", methods=["POST"])
+def run_code():
+    try:
+        data = request.get_json(silent=True) or {}
+
+        language = str(data.get("language", "")).lower().strip()
+        code = data.get("code", "")
+        stdin_text = data.get("stdin", "")
+
+        valid, error = validate_code(code)
+        if not valid:
+            return jsonify({
+                "success": False,
+                "error": error
+            }), 400
+
+        valid, error = validate_input(stdin_text)
+        if not valid:
+            return jsonify({
+                "success": False,
+                "error": error
+            }), 400
+
+        if language == "python":
+            return run_python(code, stdin_text)
+
+        if language in ("javascript", "js"):
+            return run_javascript(code, stdin_text)
+
+        if language == "sql":
+            return run_sql(code)
+
+        if language == "c":
+            return run_c(code, stdin_text)
+
+        return jsonify({
+            "success": False,
+            "error": f"Unsupported language: {language}"
+        }), 400
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+
+def run_python(code, stdin_text):
+    stdout, stderr, returncode = run_process(
+        [
+            "python3",
+            "-I",
+            "-S",
+            "-c",
+            code
+        ],
+        stdin_text
+    )
+
+    return jsonify({
+        "success": returncode == 0,
+        "stdout": stdout,
+        "stderr": stderr,
+        "exit_code": returncode
+    })
+
+
+def run_javascript(code, stdin_text):
+    stdout, stderr, returncode = run_process(
+        [
+            "node",
+            "--use-strict",
+            "-e",
+            code
+        ],
+        stdin_text
+    )
+
+    return jsonify({
+        "success": returncode == 0,
+        "stdout": stdout,
+        "stderr": stderr,
+        "exit_code": returncode
+    })
+
+
+def run_sql(code):
+    with tempfile.TemporaryDirectory() as temp_dir:
+        database = os.path.join(temp_dir, "database.db")
+
+        stdout, stderr, returncode = run_process(
+            [
+                "sqlite3",
+                "-header",
+                "-column",
+                database,
+                code
+            ],
+            ""
+        )
+
+        return jsonify({
+            "success": returncode == 0,
+            "stdout": stdout,
+            "stderr": stderr,
+            "exit_code": returncode
+        })
+
+
+def run_c(code, stdin_text):
+    with tempfile.TemporaryDirectory() as temp_dir:
+        source_file = os.path.join(temp_dir, "main.c")
+        executable = os.path.join(temp_dir, "main")
+
+        with open(source_file, "w", encoding="utf-8") as f:
+            f.write(code)
+
+        compile_result = subprocess.run(
+            [
+                "gcc",
+                "-std=c17",
+                "-O0",
+                "-Wall",
+                "-Wextra",
+                source_file,
+                "-o",
+                executable
+            ],
+            text=True,
+            capture_output=True,
+            timeout=TIMEOUT_SECONDS
+        )
+
+        compile_stdout = limit_output(compile_result.stdout)
+        compile_stderr = limit_output(compile_result.stderr)
+
+        if compile_result.returncode != 0:
+            return jsonify({
+                "success": False,
+                "stdout": compile_stdout,
+                "stderr": compile_stderr,
+                "exit_code": compile_result.returncode
+            })
+
+        stdout, stderr, returncode = run_process(
+            [executable],
+            stdin_text
+        )
+
+        return jsonify({
+            "success": returncode == 0,
+            "stdout": stdout,
+            "stderr": stderr,
+            "exit_code": returncode
+        })
+
+
+@app.route("/api/check")
+def check_runtimes():
+    runtimes = {}
+
+    commands = {
+        "python": ["python3", "--version"],
+        "node": ["node", "--version"],
+        "gcc": ["gcc", "--version"],
+        "sqlite": ["sqlite3", "--version"]
+    }
+
+    for name, command in commands.items():
         try:
-            p=subprocess.run(c,capture_output=True,text=True,timeout=3)
-            out[n]=(p.stdout or p.stderr).splitlines()[0] if p.returncode==0 else 'Unavailable'
-        except Exception: out[n]='Unavailable'
-    return jsonify(out)
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=3
+            )
 
-if __name__=='__main__': app.run(host='0.0.0.0',port=int(os.environ.get('PORT',10000)))
+            output = (result.stdout or result.stderr).strip()
+
+            if output:
+                runtimes[name] = output.splitlines()[0]
+            else:
+                runtimes[name] = "Unavailable"
+
+        except Exception:
+            runtimes[name] = "Unavailable"
+
+    return jsonify(runtimes)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", "10000"))
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )
