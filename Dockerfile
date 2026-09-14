@@ -7,11 +7,11 @@ ENV PORT=10000
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        gcc \
-        libc6-dev \
-        make \
-        binutils \
-        ca-certificates && \
+    gcc \
+    libc6-dev \
+    make \
+    binutils \
+    ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
