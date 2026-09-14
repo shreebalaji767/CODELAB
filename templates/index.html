@@ -1,3 +1,294 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Code Lab</title><link rel="stylesheet" href="/static/style.css"></head><body>
-<header><b>&lt;/&gt; CODE LAB</b><div><select id="lang"><option value="javascript">JavaScript</option><option value="html">HTML</option><option value="css">CSS</option><option value="python">Python</option><option value="sql">SQL</option><option value="c">C</option></select><button id="run">▶ RUN</button><button id="reset">RESET</button><button id="clear">CLEAR</button></div></header>
-<main><section><div class="bar"><span id="title">JavaScript</span><small>Ctrl+Enter = Run</small></div><textarea id="code" spellcheck="false"></textarea></section><section><div class="bar">OUTPUT <span id="status">Ready</span></div><iframe id="preview" class="hide" sandbox="allow-scripts"></iframe><pre id="out"></pre><div class="input"><label>PROGRAM INPUT / STDIN</label><textarea id="stdin" placeholder="Input for Python/C..."></textarea></div></section></main><footer><span>HTML • CSS • JavaScript • Python • SQL • C</span><span id="versions">Checking...</span></footer><script src="/static/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CodeLab</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                &lt;/&gt;
+            </div>
+
+            <div>
+                <div class="brand-name">
+                    CodeLab
+                </div>
+
+                <div class="brand-subtitle">
+                    Online Coding Laboratory
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <span
+                id="status"
+                class="status"
+            >
+                Ready
+            </span>
+
+            <button
+                id="run"
+                class="btn btn-run"
+            >
+                ▶ Run
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         LANGUAGE BAR
+         ===================================================== -->
+
+    <div class="language-bar">
+
+        <div class="language-left">
+
+            <label for="language">
+                Language
+            </label>
+
+            <select id="language">
+
+                <option value="python">
+                    Python
+                </option>
+
+                <option value="html">
+                    HTML
+                </option>
+
+                <option value="css">
+                    CSS
+                </option>
+
+                <option value="javascript">
+                    JavaScript
+                </option>
+
+                <option value="c">
+                    C
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="shortcut">
+            Ctrl + Enter = Run
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="workspace">
+
+
+        <!-- =================================================
+             LEFT SIDE
+             ================================================= -->
+
+        <section class="editor-panel">
+
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-title">
+                        Code Editor
+                    </span>
+                </div>
+
+
+                <div class="editor-actions">
+
+                    <button
+                        id="reset"
+                        class="small-btn"
+                    >
+                        Reset
+                    </button>
+
+                    <button
+                        id="clear"
+                        class="small-btn"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="editor-wrapper">
+
+                <textarea
+                    id="code"
+                    spellcheck="false"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                ></textarea>
+
+            </div>
+
+
+            <!-- =============================================
+                 INPUT
+                 ============================================= -->
+
+            <div class="input-section">
+
+                <div class="section-title">
+                    Program Input
+                </div>
+
+                <div class="section-help">
+                    Enter input here for Python input() and
+                    C scanf().
+                </div>
+
+                <textarea
+                    id="stdin"
+                    class="input-box"
+                    spellcheck="false"
+                    placeholder="Example:
+Shree
+25"
+                ></textarea>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             RIGHT SIDE
+             ================================================= -->
+
+        <section class="right-panel">
+
+
+            <!-- =============================================
+                 OUTPUT
+                 ============================================= -->
+
+            <div class="output-panel">
+
+                <div class="panel-header">
+
+                    <span class="panel-title">
+                        Output
+                    </span>
+
+                </div>
+
+                <pre
+                    id="output"
+                    class="output"
+                ></pre>
+
+            </div>
+
+
+            <!-- =============================================
+                 PREVIEW
+                 ============================================= -->
+
+            <div class="preview-panel">
+
+                <div class="panel-header">
+
+                    <span class="panel-title">
+                        Browser Preview
+                    </span>
+
+                </div>
+
+                <iframe
+                    id="preview"
+                    title="Browser Preview"
+                    sandbox="allow-scripts"
+                ></iframe>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+
+        <div>
+            CodeLab
+        </div>
+
+        <div
+            id="runtime"
+            class="runtime"
+        >
+            Checking runtimes...
+        </div>
+
+    </footer>
+
+
+</div>
+
+
+<script
+    src="{{ url_for('static', filename='app.js') }}"
+></script>
+
+</body>
+
+</html>
