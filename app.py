@@ -19,7 +19,7 @@ COMPILE_TIMEOUT = 10
 RUN_TIMEOUT = 5
 
 
-def apply_resource_limits():
+def apply_limits():
     try:
         resource.setrlimit(
             resource.RLIMIT_CPU,
@@ -29,10 +29,10 @@ def apply_resource_limits():
         pass
 
     try:
-        memory_limit = 256 * 1024 * 1024
+        memory = 256 * 1024 * 1024
         resource.setrlimit(
             resource.RLIMIT_AS,
-            (memory_limit, memory_limit)
+            (memory, memory)
         )
     except Exception:
         pass
@@ -63,34 +63,29 @@ def apply_resource_limits():
         pass
 
 
-def decode_output(value):
+def clean_output(value):
     if value is None:
         return ""
 
     if isinstance(value, bytes):
-        return value.decode(
+        value = value.decode(
             "utf-8",
             errors="replace"
         )
 
-    return str(value)
-
-
-def limit_output(value):
-    value = decode_output(value)
+    value = str(value)
 
     if len(value) > MAX_OUTPUT_BYTES:
         return (
             value[:MAX_OUTPUT_BYTES]
             + "\n\n"
-            + "[Output truncated because it exceeded "
-            "the maximum output size.]"
+            + "[Output truncated.]"
         )
 
     return value
 
 
-def validate_text(code, stdin_text):
+def validate(code, stdin_text):
     if not isinstance(code, str):
         return False, "Invalid code."
 
@@ -100,13 +95,13 @@ def validate_text(code, stdin_text):
     if len(code.encode("utf-8")) > MAX_CODE_BYTES:
         return (
             False,
-            "Code is too large. Maximum size is 100 KB."
+            "Code is too large. Maximum is 100 KB."
         )
 
     if len(stdin_text.encode("utf-8")) > MAX_INPUT_BYTES:
         return (
             False,
-            "Input is too large. Maximum size is 50 KB."
+            "Input is too large. Maximum is 50 KB."
         )
 
     if not code.strip():
@@ -115,7 +110,7 @@ def validate_text(code, stdin_text):
     return True, ""
 
 
-def run_process(
+def execute(
     command,
     stdin_text,
     cwd=None,
@@ -129,52 +124,47 @@ def run_process(
             text=True,
             cwd=cwd,
             timeout=timeout,
-            preexec_fn=apply_resource_limits
+            preexec_fn=apply_limits
         )
 
-        stdout = limit_output(process.stdout)
-        stderr = limit_output(process.stderr)
-
         return {
-            "stdout": stdout,
-            "stderr": stderr,
+            "stdout": clean_output(
+                process.stdout
+            ),
+            "stderr": clean_output(
+                process.stderr
+            ),
             "returncode": process.returncode,
             "timeout": False,
             "success": process.returncode == 0
         }
 
     except subprocess.TimeoutExpired as error:
-        stdout = limit_output(error.stdout)
-        stderr = limit_output(error.stderr)
 
-        message = (
-            "Program execution timed out after "
-            f"{timeout} seconds."
+        stderr = clean_output(
+            error.stderr
         )
 
         if stderr:
             stderr += "\n\n"
 
-        stderr += message
+        stderr += (
+            "Program execution timed out after "
+            f"{timeout} seconds."
+        )
 
         return {
-            "stdout": stdout,
+            "stdout": clean_output(
+                error.stdout
+            ),
             "stderr": stderr,
             "returncode": -1,
             "timeout": True,
             "success": False
         }
 
-    except MemoryError:
-        return {
-            "stdout": "",
-            "stderr": "Program exceeded the memory limit.",
-            "returncode": -1,
-            "timeout": False,
-            "success": False
-        }
-
     except Exception as error:
+
         return {
             "stdout": "",
             "stderr": (
@@ -189,274 +179,18 @@ def run_process(
 
 
 # ============================================================
-# HOMEPAGE
+# HOME PAGE
 # ============================================================
 
 @app.route("/")
 def index():
-    return render_template("index.html")
-
-
-# ============================================================
-# PYTHON
-# ============================================================
-
-def run_python(code, stdin_text):
-    result = run_process(
-        [
-            sys.executable,
-            "-I",
-            "-u",
-            "-c",
-            code
-        ],
-        stdin_text=stdin_text,
-        timeout=RUN_TIMEOUT
+    return render_template(
+        "index.html"
     )
 
-    return jsonify({
-        "success": result["success"],
-        "language": "python",
-        "phase": "run",
-        "stdout": result["stdout"],
-        "stderr": result["stderr"],
-        "returncode": result["returncode"],
-        "timeout": result["timeout"]
-    })
-
 
 # ============================================================
-# C
-# ============================================================
-
-def run_c(code, stdin_text):
-
-    with tempfile.TemporaryDirectory(
-        prefix="codelab_"
-    ) as temp_dir:
-
-        source_file = os.path.join(
-            temp_dir,
-            "main.c"
-        )
-
-        executable_file = os.path.join(
-            temp_dir,
-            "program"
-        )
-
-        try:
-            with open(
-                source_file,
-                "w",
-                encoding="utf-8"
-            ) as source:
-                source.write(code)
-
-        except Exception as error:
-            return jsonify({
-                "success": False,
-                "language": "c",
-                "phase": "source",
-                "stdout": "",
-                "stderr": (
-                    "Could not create C source file.\n\n"
-                    + str(error)
-                ),
-                "returncode": -1,
-                "timeout": False
-            })
-
-        try:
-            compile_process = subprocess.run(
-                [
-                    "gcc",
-                    "-std=c17",
-                    "-O0",
-                    "-Wall",
-                    "-Wextra",
-                    "-Wpedantic",
-                    "-fno-asm",
-                    source_file,
-                    "-o",
-                    executable_file
-                ],
-                capture_output=True,
-                text=True,
-                cwd=temp_dir,
-                timeout=COMPILE_TIMEOUT,
-                preexec_fn=apply_resource_limits
-            )
-
-        except subprocess.TimeoutExpired:
-            return jsonify({
-                "success": False,
-                "language": "c",
-                "phase": "compile",
-                "stdout": "",
-                "stderr": (
-                    "C compilation timed out after "
-                    f"{COMPILE_TIMEOUT} seconds."
-                ),
-                "returncode": -1,
-                "timeout": True
-            })
-
-        except Exception as error:
-            return jsonify({
-                "success": False,
-                "language": "c",
-                "phase": "compile",
-                "stdout": "",
-                "stderr": (
-                    type(error).__name__
-                    + ": "
-                    + str(error)
-                ),
-                "returncode": -1,
-                "timeout": False
-            })
-
-        if compile_process.returncode != 0:
-            return jsonify({
-                "success": False,
-                "language": "c",
-                "phase": "compile",
-                "stdout": limit_output(
-                    compile_process.stdout
-                ),
-                "stderr": limit_output(
-                    compile_process.stderr
-                ),
-                "returncode": (
-                    compile_process.returncode
-                ),
-                "timeout": False
-            })
-
-        result = run_process(
-            [executable_file],
-            stdin_text=stdin_text,
-            cwd=temp_dir,
-            timeout=RUN_TIMEOUT
-        )
-
-        return jsonify({
-            "success": result["success"],
-            "language": "c",
-            "phase": "run",
-            "stdout": result["stdout"],
-            "stderr": result["stderr"],
-            "returncode": result["returncode"],
-            "timeout": result["timeout"]
-        })
-
-
-# ============================================================
-# RUN API
-# ============================================================
-
-@app.route(
-    "/api/run",
-    methods=["POST"]
-)
-def api_run():
-
-    try:
-        data = request.get_json(
-            silent=True
-        )
-
-        if not isinstance(data, dict):
-            return jsonify({
-                "success": False,
-                "error": "Invalid JSON request."
-            }), 400
-
-        language = str(
-            data.get("language", "")
-        ).strip().lower()
-
-        code = data.get(
-            "code",
-            ""
-        )
-
-        stdin_text = data.get(
-            "stdin",
-            ""
-        )
-
-        if code is None:
-            code = ""
-
-        if stdin_text is None:
-            stdin_text = ""
-
-        code = str(code)
-        stdin_text = str(stdin_text)
-
-        valid, message = validate_text(
-            code,
-            stdin_text
-        )
-
-        if not valid:
-            return jsonify({
-                "success": False,
-                "error": message
-            }), 400
-
-        if language == "python":
-            return run_python(
-                code,
-                stdin_text
-            )
-
-        if language == "c":
-            return run_c(
-                code,
-                stdin_text
-            )
-
-        if language in [
-            "html",
-            "css",
-            "javascript"
-        ]:
-            return jsonify({
-                "success": False,
-                "error": (
-                    language.capitalize()
-                    + " runs in the browser. "
-                    "It should not be sent to "
-                    "the server compiler."
-                )
-            }), 400
-
-        return jsonify({
-            "success": False,
-            "error": (
-                "Unsupported language: "
-                + language
-            )
-        }), 400
-
-    except Exception as error:
-
-        return jsonify({
-            "success": False,
-            "error": (
-                type(error).__name__
-                + ": "
-                + str(error)
-            ),
-            "traceback": traceback.format_exc()
-        }), 500
-
-
-# ============================================================
-# HEALTH CHECK
+# HEALTH
 # ============================================================
 
 @app.route("/health")
@@ -473,10 +207,6 @@ def health():
 
 @app.route("/api/runtime")
 def runtime():
-
-    python_version = ""
-    gcc_version = ""
-    gcc_available = False
 
     try:
         python_result = subprocess.run(
@@ -495,6 +225,7 @@ def runtime():
         ).strip()
 
     except Exception as error:
+
         python_version = (
             "Unavailable: "
             + str(error)
@@ -521,21 +252,287 @@ def runtime():
         )
 
     except Exception as error:
+
         gcc_version = (
             "Unavailable: "
             + str(error)
         )
 
+        gcc_available = False
+
     return jsonify({
         "python": python_version,
         "gcc": gcc_version,
-        "gcc_available": gcc_available,
-        "python_executable": sys.executable
+        "gcc_available": gcc_available
     })
 
 
 # ============================================================
-# START SERVER
+# RUN API
+# ============================================================
+
+@app.route(
+    "/api/run",
+    methods=["POST"]
+)
+def api_run():
+
+    try:
+
+        data = request.get_json(
+            silent=True
+        )
+
+        if not isinstance(data, dict):
+
+            return jsonify({
+                "success": False,
+                "error": "Invalid request."
+            }), 400
+
+        language = str(
+            data.get(
+                "language",
+                ""
+            )
+        ).strip().lower()
+
+        code = data.get(
+            "code",
+            ""
+        )
+
+        stdin_text = data.get(
+            "stdin",
+            ""
+        )
+
+        if code is None:
+            code = ""
+
+        if stdin_text is None:
+            stdin_text = ""
+
+        code = str(code)
+        stdin_text = str(stdin_text)
+
+        valid, message = validate(
+            code,
+            stdin_text
+        )
+
+        if not valid:
+
+            return jsonify({
+                "success": False,
+                "error": message
+            }), 400
+
+
+        # ====================================================
+        # PYTHON
+        # ====================================================
+
+        if language == "python":
+
+            result = execute(
+                [
+                    sys.executable,
+                    "-I",
+                    "-u",
+                    "-c",
+                    code
+                ],
+                stdin_text,
+                timeout=RUN_TIMEOUT
+            )
+
+            return jsonify({
+                "success": result["success"],
+                "language": "python",
+                "phase": "run",
+                "stdout": result["stdout"],
+                "stderr": result["stderr"],
+                "returncode": result["returncode"],
+                "timeout": result["timeout"]
+            })
+
+
+        # ====================================================
+        # C
+        # ====================================================
+
+        if language == "c":
+
+            with tempfile.TemporaryDirectory(
+                prefix="codelab_"
+            ) as temp:
+
+                source_file = os.path.join(
+                    temp,
+                    "main.c"
+                )
+
+                binary_file = os.path.join(
+                    temp,
+                    "program"
+                )
+
+                try:
+
+                    with open(
+                        source_file,
+                        "w",
+                        encoding="utf-8"
+                    ) as file:
+
+                        file.write(code)
+
+                except Exception as error:
+
+                    return jsonify({
+                        "success": False,
+                        "language": "c",
+                        "phase": "source",
+                        "stdout": "",
+                        "stderr": (
+                            "Could not create C "
+                            "source file.\n\n"
+                            + str(error)
+                        ),
+                        "returncode": -1,
+                        "timeout": False
+                    })
+
+
+                # --------------------------------------------
+                # COMPILE
+                # --------------------------------------------
+
+                try:
+
+                    compile_result = subprocess.run(
+                        [
+                            "gcc",
+                            "-std=c17",
+                            "-O0",
+                            "-Wall",
+                            "-Wextra",
+                            "-Wpedantic",
+                            source_file,
+                            "-o",
+                            binary_file
+                        ],
+                        capture_output=True,
+                        text=True,
+                        cwd=temp,
+                        timeout=COMPILE_TIMEOUT,
+                        preexec_fn=apply_limits
+                    )
+
+                except subprocess.TimeoutExpired:
+
+                    return jsonify({
+                        "success": False,
+                        "language": "c",
+                        "phase": "compile",
+                        "stdout": "",
+                        "stderr": (
+                            "C compilation timed out "
+                            f"after {COMPILE_TIMEOUT} seconds."
+                        ),
+                        "returncode": -1,
+                        "timeout": True
+                    })
+
+                except Exception as error:
+
+                    return jsonify({
+                        "success": False,
+                        "language": "c",
+                        "phase": "compile",
+                        "stdout": "",
+                        "stderr": (
+                            type(error).__name__
+                            + ": "
+                            + str(error)
+                        ),
+                        "returncode": -1,
+                        "timeout": False
+                    })
+
+
+                # --------------------------------------------
+                # COMPILATION ERROR
+                # --------------------------------------------
+
+                if compile_result.returncode != 0:
+
+                    return jsonify({
+                        "success": False,
+                        "language": "c",
+                        "phase": "compile",
+                        "stdout": clean_output(
+                            compile_result.stdout
+                        ),
+                        "stderr": clean_output(
+                            compile_result.stderr
+                        ),
+                        "returncode": (
+                            compile_result.returncode
+                        ),
+                        "timeout": False
+                    })
+
+
+                # --------------------------------------------
+                # RUN C PROGRAM
+                # --------------------------------------------
+
+                result = execute(
+                    [
+                        binary_file
+                    ],
+                    stdin_text,
+                    cwd=temp,
+                    timeout=RUN_TIMEOUT
+                )
+
+                return jsonify({
+                    "success": result["success"],
+                    "language": "c",
+                    "phase": "run",
+                    "stdout": result["stdout"],
+                    "stderr": result["stderr"],
+                    "returncode": result["returncode"],
+                    "timeout": result["timeout"]
+                })
+
+
+        return jsonify({
+            "success": False,
+            "error": (
+                "Unsupported server language: "
+                + language
+            )
+        }), 400
+
+
+    except Exception as error:
+
+        return jsonify({
+            "success": False,
+            "error": (
+                type(error).__name__
+                + ": "
+                + str(error)
+            ),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
+# ============================================================
+# SERVER
 # ============================================================
 
 if __name__ == "__main__":
