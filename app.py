@@ -1,33 +1,22 @@
 import os
 import subprocess
 import tempfile
-import textwrap
-
 from flask import Flask, jsonify, render_template, request
 
 
 app = Flask(__name__)
 
-
-# ============================================================
-# CONFIGURATION
-# ============================================================
-
 PORT = int(os.environ.get("PORT", "10000"))
 
-MAX_CODE_SIZE = 50_000
-MAX_INPUT_SIZE = 20_000
-MAX_OUTPUT_SIZE = 50_000
+MAX_CODE_SIZE = 50000
+MAX_INPUT_SIZE = 20000
+MAX_OUTPUT_SIZE = 50000
 
-EXECUTION_TIMEOUT = 5
+RUN_TIMEOUT = 5
 COMPILE_TIMEOUT = 5
 
 
-# ============================================================
-# BASIC HELPERS
-# ============================================================
-
-def truncate_output(value):
+def clean_output(value):
     if value is None:
         return ""
 
@@ -42,32 +31,9 @@ def truncate_output(value):
     return value
 
 
-def validate_code(code):
-    if not isinstance(code, str):
-        return False, "Invalid code."
-
-    if len(code.encode("utf-8")) > MAX_CODE_SIZE:
-        return False, "Code is too large. Maximum allowed size is 50 KB."
-
-    return True, ""
-
-
-def validate_stdin(stdin):
-    if stdin is None:
-        stdin = ""
-
-    if not isinstance(stdin, str):
-        stdin = str(stdin)
-
-    if len(stdin.encode("utf-8")) > MAX_INPUT_SIZE:
-        return False, "Input is too large. Maximum allowed size is 20 KB."
-
-    return True, ""
-
-
-def execute_process(command, stdin_text="", cwd=None, timeout=EXECUTION_TIMEOUT):
+def run_process(command, stdin_text="", cwd=None, timeout=RUN_TIMEOUT):
     try:
-        process = subprocess.run(
+        result = subprocess.run(
             command,
             input=stdin_text,
             text=True,
@@ -76,22 +42,16 @@ def execute_process(command, stdin_text="", cwd=None, timeout=EXECUTION_TIMEOUT)
             timeout=timeout
         )
 
-        stdout = truncate_output(process.stdout)
-        stderr = truncate_output(process.stderr)
-
         return {
-            "stdout": stdout,
-            "stderr": stderr,
-            "exit_code": process.returncode,
-            "timed_out": False
+            "stdout": clean_output(result.stdout),
+            "stderr": clean_output(result.stderr),
+            "exit_code": result.returncode,
+            "timeout": False
         }
 
     except subprocess.TimeoutExpired as error:
-        stdout = error.stdout or ""
-        stderr = error.stderr or ""
-
-        stdout = truncate_output(stdout)
-        stderr = truncate_output(stderr)
+        stdout = clean_output(error.stdout)
+        stderr = clean_output(error.stderr)
 
         if stderr:
             stderr += "\n\n"
@@ -102,15 +62,7 @@ def execute_process(command, stdin_text="", cwd=None, timeout=EXECUTION_TIMEOUT)
             "stdout": stdout,
             "stderr": stderr,
             "exit_code": -1,
-            "timed_out": True
-        }
-
-    except FileNotFoundError as error:
-        return {
-            "stdout": "",
-            "stderr": f"Runtime not found: {error}",
-            "exit_code": -1,
-            "timed_out": False
+            "timeout": True
         }
 
     except Exception as error:
@@ -118,22 +70,30 @@ def execute_process(command, stdin_text="", cwd=None, timeout=EXECUTION_TIMEOUT)
             "stdout": "",
             "stderr": str(error),
             "exit_code": -1,
-            "timed_out": False
+            "timeout": False
         }
 
 
-# ============================================================
-# PAGES
-# ============================================================
+def validate_request(code, stdin_text):
+    if not isinstance(code, str):
+        return False, "Invalid code."
+
+    if len(code.encode("utf-8")) > MAX_CODE_SIZE:
+        return False, "Code is too large. Maximum size is 50 KB."
+
+    if not isinstance(stdin_text, str):
+        return False, "Invalid input."
+
+    if len(stdin_text.encode("utf-8")) > MAX_INPUT_SIZE:
+        return False, "Input is too large. Maximum size is 20 KB."
+
+    return True, ""
+
 
 @app.route("/")
-def home():
+def index():
     return render_template("index.html")
 
-
-# ============================================================
-# HEALTH CHECK
-# ============================================================
 
 @app.route("/health")
 def health():
@@ -146,8 +106,8 @@ def health():
 # PYTHON
 # ============================================================
 
-def execute_python(code, stdin_text):
-    result = execute_process(
+def run_python(code, stdin_text):
+    result = run_process(
         [
             "python3",
             "-I",
@@ -156,89 +116,25 @@ def execute_python(code, stdin_text):
             code
         ],
         stdin_text=stdin_text,
-        timeout=EXECUTION_TIMEOUT
+        timeout=RUN_TIMEOUT
     )
 
     return jsonify({
         "success": (
             result["exit_code"] == 0
-            and not result["timed_out"]
+            and not result["timeout"]
         ),
         "stdout": result["stdout"],
         "stderr": result["stderr"],
         "exit_code": result["exit_code"]
     })
-
-
-# ============================================================
-# JAVASCRIPT
-# ============================================================
-
-def execute_javascript(code, stdin_text):
-    result = execute_process(
-        [
-            "node",
-            "--use-strict",
-            "-e",
-            code
-        ],
-        stdin_text=stdin_text,
-        timeout=EXECUTION_TIMEOUT
-    )
-
-    return jsonify({
-        "success": (
-            result["exit_code"] == 0
-            and not result["timed_out"]
-        ),
-        "stdout": result["stdout"],
-        "stderr": result["stderr"],
-        "exit_code": result["exit_code"]
-    })
-
-
-# ============================================================
-# SQL
-# ============================================================
-
-def execute_sql(code):
-    with tempfile.TemporaryDirectory() as temp_dir:
-
-        database_file = os.path.join(
-            temp_dir,
-            "codelab.db"
-        )
-
-        result = execute_process(
-            [
-                "sqlite3",
-                "-header",
-                "-column",
-                database_file,
-                code
-            ],
-            stdin_text="",
-            cwd=temp_dir,
-            timeout=EXECUTION_TIMEOUT
-        )
-
-        return jsonify({
-            "success": (
-                result["exit_code"] == 0
-                and not result["timed_out"]
-            ),
-            "stdout": result["stdout"],
-            "stderr": result["stderr"],
-            "exit_code": result["exit_code"]
-        })
 
 
 # ============================================================
 # C
 # ============================================================
 
-def execute_c(code, stdin_text):
-
+def run_c(code, stdin_text):
     with tempfile.TemporaryDirectory() as temp_dir:
 
         source_file = os.path.join(
@@ -251,7 +147,6 @@ def execute_c(code, stdin_text):
             "main"
         )
 
-        # Write C source
         with open(
             source_file,
             "w",
@@ -259,55 +154,64 @@ def execute_c(code, stdin_text):
         ) as file:
             file.write(code)
 
-        # Compile
-        compile_process = subprocess.run(
-            [
-                "gcc",
-                "-std=c17",
-                "-O0",
-                "-Wall",
-                "-Wextra",
-                source_file,
-                "-o",
-                executable_file
-            ],
-            text=True,
-            capture_output=True,
-            timeout=COMPILE_TIMEOUT
-        )
+        try:
+            compile_result = subprocess.run(
+                [
+                    "gcc",
+                    "-std=c17",
+                    "-O0",
+                    "-Wall",
+                    "-Wextra",
+                    source_file,
+                    "-o",
+                    executable_file
+                ],
+                text=True,
+                capture_output=True,
+                timeout=COMPILE_TIMEOUT
+            )
 
-        compile_stdout = truncate_output(
-            compile_process.stdout
-        )
-
-        compile_stderr = truncate_output(
-            compile_process.stderr
-        )
-
-        # Compilation failed
-        if compile_process.returncode != 0:
-
+        except subprocess.TimeoutExpired:
             return jsonify({
                 "success": False,
-                "stdout": compile_stdout,
-                "stderr": compile_stderr,
-                "exit_code": compile_process.returncode
+                "stdout": "",
+                "stderr": "Compilation timed out.",
+                "exit_code": -1
             })
 
-        # Run compiled C program
-        result = execute_process(
+        except Exception as error:
+            return jsonify({
+                "success": False,
+                "stdout": "",
+                "stderr": str(error),
+                "exit_code": -1
+            })
+
+        if compile_result.returncode != 0:
+            return jsonify({
+                "success": False,
+                "stdout": clean_output(
+                    compile_result.stdout
+                ),
+                "stderr": clean_output(
+                    compile_result.stderr
+                ),
+                "exit_code": compile_result.returncode
+            })
+
+        result = run_process(
             [
                 executable_file
             ],
             stdin_text=stdin_text,
             cwd=temp_dir,
-            timeout=EXECUTION_TIMEOUT
+            timeout=RUN_TIMEOUT
         )
 
         return jsonify({
             "success": (
                 result["exit_code"] == 0
-                and not result["timed_out"]
+                and not result["timeout"]
             ),
             "stdout": result["stdout"],
             "stderr": result["stderr"],
@@ -316,14 +220,13 @@ def execute_c(code, stdin_text):
 
 
 # ============================================================
-# RUN API
+# API
 # ============================================================
 
 @app.route("/api/run", methods=["POST"])
-def run_code():
+def api_run():
 
     try:
-
         data = request.get_json(
             silent=True
         )
@@ -348,7 +251,6 @@ def run_code():
             ""
         )
 
-        # Normalize
         if code is None:
             code = ""
 
@@ -358,17 +260,8 @@ def run_code():
         code = str(code)
         stdin_text = str(stdin_text)
 
-        # Validate code
-        valid, error = validate_code(code)
-
-        if not valid:
-            return jsonify({
-                "success": False,
-                "error": error
-            }), 400
-
-        # Validate stdin
-        valid, error = validate_stdin(
+        valid, error = validate_request(
+            code,
             stdin_text
         )
 
@@ -378,54 +271,27 @@ def run_code():
                 "error": error
             }), 400
 
-        # Empty code
         if not code.strip():
-
             return jsonify({
                 "success": False,
-                "error": "Please enter some code first."
+                "error": "Please enter code."
             }), 400
 
-        # Python
         if language == "python":
-
-            return execute_python(
+            return run_python(
                 code,
                 stdin_text
             )
 
-        # JavaScript
-        if language in (
-            "javascript",
-            "js"
-        ):
-
-            return execute_javascript(
-                code,
-                stdin_text
-            )
-
-        # SQL
-        if language == "sql":
-
-            return execute_sql(
-                code
-            )
-
-        # C
         if language == "c":
-
-            return execute_c(
+            return run_c(
                 code,
                 stdin_text
             )
 
         return jsonify({
             "success": False,
-            "error": (
-                "Unsupported language: "
-                + language
-            )
+            "error": "This language runs in the browser."
         }), 400
 
     except Exception as error:
@@ -441,36 +307,18 @@ def run_code():
 # ============================================================
 
 @app.route("/api/check")
-def check_runtimes():
+def check():
 
     runtimes = {}
 
     commands = {
-        "python": [
-            "python3",
-            "--version"
-        ],
-
-        "node": [
-            "node",
-            "--version"
-        ],
-
-        "gcc": [
-            "gcc",
-            "--version"
-        ],
-
-        "sqlite": [
-            "sqlite3",
-            "--version"
-        ]
+        "python": ["python3", "--version"],
+        "gcc": ["gcc", "--version"]
     }
 
     for name, command in commands.items():
 
         try:
-
             result = subprocess.run(
                 command,
                 capture_output=True,
@@ -478,35 +326,24 @@ def check_runtimes():
                 timeout=3
             )
 
-            output = (
+            text = (
                 result.stdout
                 or result.stderr
                 or ""
             ).strip()
 
-            if output:
-
-                runtimes[name] = (
-                    output.splitlines()[0]
-                )
-
+            if text:
+                runtimes[name] = text.splitlines()[0]
             else:
-
                 runtimes[name] = "Unavailable"
 
         except Exception:
-
             runtimes[name] = "Unavailable"
 
     return jsonify(runtimes)
 
 
-# ============================================================
-# START SERVER
-# ============================================================
-
 if __name__ == "__main__":
-
     app.run(
         host="0.0.0.0",
         port=PORT,
