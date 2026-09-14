@@ -10,76 +10,56 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>CodeLab</title>
+    <title>CodeLab - Online Code Editor</title>
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
+        href="{{ url_for('static', filename='style.css') }}?v=100"
     >
 
 </head>
 
+
 <body>
 
-<div class="app">
 
 <header class="topbar">
 
-    <div class="brand">
-
-        <div class="brand-icon">
-            &lt;/&gt;
-        </div>
-
-        <div>
-
-            <div class="brand-name">
-                CodeLab
-            </div>
-
-            <div class="brand-subtitle">
-                Online Coding Laboratory
-            </div>
-
-        </div>
-
+    <div class="logo">
+        CodeLab
     </div>
 
 
-    <div class="top-actions">
+    <div class="top-title">
+        Online Code Editor
+    </div>
+
+
+    <div class="top-right">
 
         <span
-            id="status"
-            class="status"
+            id="server-status"
+            class="server-status"
         >
-            Ready
+            Checking...
         </span>
-
-        <button
-            id="run"
-            class="btn btn-run"
-        >
-            ▶ Run
-        </button>
 
     </div>
 
 </header>
 
 
-<div class="language-bar">
 
-    <div class="language-left">
+<nav class="toolbar">
+
+
+    <div class="language-control">
 
         <label for="language">
-            Language
+            Language:
         </label>
 
         <select id="language">
-
-            <option value="python">
-                Python
-            </option>
 
             <option value="html">
                 HTML
@@ -93,6 +73,10 @@
                 JavaScript
             </option>
 
+            <option value="python">
+                Python
+            </option>
+
             <option value="c">
                 C
             </option>
@@ -102,147 +86,182 @@
     </div>
 
 
-    <div class="shortcut">
-        Ctrl + Enter = Run
+    <div class="toolbar-buttons">
+
+        <button
+            id="run-button"
+            class="run-button"
+        >
+            ▶ Run
+        </button>
+
+        <button
+            id="reset-button"
+            class="toolbar-button"
+        >
+            Reset
+        </button>
+
+        <button
+            id="clear-button"
+            class="toolbar-button"
+        >
+            Clear
+        </button>
+
     </div>
 
-</div>
+</nav>
 
 
-<main class="workspace">
+
+<main class="main-container">
 
 
-<section class="editor-panel">
+    <section class="editor-side">
 
-    <div class="panel-header">
 
-        <span class="panel-title">
-            Code Editor
-        </span>
+        <div class="section-header">
 
-        <div class="editor-actions">
+            <span>
+                Code
+            </span>
 
-            <button
-                id="reset"
-                class="small-btn"
+            <span
+                id="language-label"
+                class="language-label"
             >
-                Reset
-            </button>
-
-            <button
-                id="clear"
-                class="small-btn"
-            >
-                Clear
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="editor-wrapper">
-
-        <textarea
-            id="code"
-            spellcheck="false"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-        ></textarea>
-
-    </div>
-
-
-    <div class="input-section">
-
-        <div class="section-title">
-            Program Input
-        </div>
-
-        <div class="section-help">
-            Used by Python input() and C scanf().
-        </div>
-
-        <textarea
-            id="stdin"
-            class="input-box"
-            spellcheck="false"
-            placeholder="Enter program input here..."
-        ></textarea>
-
-    </div>
-
-</section>
-
-
-<section class="right-panel">
-
-
-    <div class="output-panel">
-
-        <div class="panel-header">
-
-            <span class="panel-title">
-                Output
+                HTML
             </span>
 
         </div>
 
-        <pre
-            id="output"
-            class="output"
-        ></pre>
 
-    </div>
+        <div class="editor-container">
+
+            <textarea
+                id="code"
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+            ></textarea>
+
+        </div>
 
 
-    <div class="preview-panel">
+        <div
+            id="input-container"
+            class="input-container"
+        >
 
-        <div class="panel-header">
+            <div class="input-header">
 
-            <span class="panel-title">
+                <div>
+
+                    <strong>
+                        Input
+                    </strong>
+
+                    <div class="input-description">
+                        Enter values here when your program uses
+                        input() or scanf().
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <textarea
+                id="stdin"
+                spellcheck="false"
+                placeholder="Example:&#10;John&#10;25&#10;100"
+            ></textarea>
+
+        </div>
+
+
+    </section>
+
+
+
+    <section class="result-side">
+
+
+        <div class="section-header">
+
+            <span>
+                Result
+            </span>
+
+            <span
+                id="result-status"
+                class="result-status"
+            >
+                Ready
+            </span>
+
+        </div>
+
+
+        <div
+            id="result-container"
+            class="result-container"
+        >
+
+            <pre
+                id="output"
+            ></pre>
+
+        </div>
+
+
+        <div
+            id="preview-container"
+            class="preview-container"
+        >
+
+            <div class="preview-title">
                 Browser Preview
-            </span>
+            </div>
+
+            <iframe
+                id="preview"
+                title="Code Preview"
+                sandbox="allow-scripts"
+            ></iframe>
 
         </div>
 
-        <iframe
-            id="preview"
-            title="Browser Preview"
-            sandbox="allow-scripts"
-        ></iframe>
 
-    </div>
+    </section>
 
-
-</section>
 
 </main>
 
 
+
 <footer class="footer">
 
-    <span>
-        CodeLab
-    </span>
+    <div>
+        CodeLab Online Compiler
+    </div>
 
-    <span
-        id="runtime"
-        class="runtime"
+    <div
+        id="runtime-info"
     >
-        Checking runtimes...
-    </span>
+        Checking Python and GCC...
+    </div>
 
 </footer>
 
 
-</div>
-
 
 <script
-    src="{{ url_for('static', filename='app.js') }}"
+    src="{{ url_for('static', filename='app.js') }}?v=100"
 ></script>
+
 
 </body>
 
