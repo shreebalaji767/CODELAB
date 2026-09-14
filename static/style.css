@@ -2,7 +2,6 @@
     box-sizing: border-box;
 }
 
-
 html,
 body {
     margin: 0;
@@ -11,19 +10,11 @@ body {
     height: 100%;
 }
 
-
 body {
-    font-family:
-        Inter,
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     background: #0f172a;
-
     color: #e5e7eb;
 }
-
 
 button,
 select,
@@ -31,580 +22,335 @@ textarea {
     font: inherit;
 }
 
-
 .app {
     min-height: 100vh;
-
     display: flex;
     flex-direction: column;
 }
 
 
-/* ==========================================================
-   TOP BAR
-   ========================================================== */
+/* TOP */
 
 .topbar {
     height: 64px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 0 20px;
-
     background: #111827;
-
     border-bottom: 1px solid #263244;
 }
 
-
 .brand {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 }
-
 
 .brand-icon {
     width: 40px;
     height: 40px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border-radius: 9px;
-
     background: #2563eb;
-
     color: white;
-
-    font-weight: 700;
-
-    font-size: 15px;
+    font-weight: bold;
 }
-
 
 .brand-name {
     font-size: 18px;
-
-    font-weight: 700;
-
-    color: #f8fafc;
+    font-weight: bold;
 }
-
 
 .brand-subtitle {
     font-size: 11px;
-
     color: #94a3b8;
-
-    margin-top: 2px;
 }
-
 
 .top-actions {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 }
 
-
 .status {
-    color: #94a3b8;
-
     font-size: 13px;
+    color: #94a3b8;
 }
-
 
 .status.success {
     color: #4ade80;
 }
 
-
 .status.error {
     color: #f87171;
 }
 
-
 .btn {
     border: 0;
-
-    cursor: pointer;
-
     border-radius: 7px;
-
     padding: 9px 18px;
-
-    font-weight: 700;
+    cursor: pointer;
+    font-weight: bold;
 }
-
 
 .btn-run {
     background: #22c55e;
-
     color: #052e16;
 }
 
 
-.btn-run:hover {
-    background: #16a34a;
-}
-
-
-/* ==========================================================
-   LANGUAGE BAR
-   ========================================================== */
+/* LANGUAGE */
 
 .language-bar {
     min-height: 52px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 8px 20px;
-
     background: #172033;
-
     border-bottom: 1px solid #263244;
 }
 
-
 .language-left {
     display: flex;
-
     align-items: center;
-
     gap: 10px;
 }
 
-
 .language-left label {
-    font-size: 13px;
-
     color: #94a3b8;
+    font-size: 13px;
 }
-
 
 #language {
-    min-width: 150px;
-
+    min-width: 160px;
     padding: 8px 12px;
-
-    border-radius: 6px;
-
     border: 1px solid #374151;
-
+    border-radius: 6px;
     background: #111827;
-
-    color: #f8fafc;
-
-    outline: none;
+    color: white;
 }
-
 
 .shortcut {
-    font-size: 12px;
-
     color: #64748b;
+    font-size: 12px;
 }
 
 
-/* ==========================================================
-   WORKSPACE
-   ========================================================== */
+/* WORKSPACE */
 
 .workspace {
     flex: 1;
-
     min-height: 0;
-
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr);
-
+    grid-template-columns: 1fr 1fr;
     gap: 1px;
-
     background: #263244;
 }
-
-
-/* ==========================================================
-   PANELS
-   ========================================================== */
 
 .editor-panel,
 .right-panel {
     min-width: 0;
-
     min-height: 0;
-
     background: #0f172a;
 }
 
-
 .editor-panel {
     display: flex;
-
     flex-direction: column;
 }
 
-
 .right-panel {
     display: grid;
-
-    grid-template-rows:
-        minmax(200px, 1fr)
-        minmax(200px, 1fr);
-
+    grid-template-rows: 1fr 1fr;
     gap: 1px;
-
     background: #263244;
 }
-
 
 .output-panel,
 .preview-panel {
     min-height: 0;
-
     display: flex;
-
     flex-direction: column;
-
     background: #0b1220;
 }
 
 
-/* ==========================================================
-   PANEL HEADER
-   ========================================================== */
+/* HEADERS */
 
 .panel-header {
     height: 44px;
-
     flex-shrink: 0;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 0 12px;
-
     background: #111827;
-
     border-bottom: 1px solid #263244;
 }
 
-
 .panel-title {
     font-size: 13px;
-
-    font-weight: 700;
-
+    font-weight: bold;
     color: #cbd5e1;
 }
-
 
 .editor-actions {
     display: flex;
-
     gap: 7px;
 }
 
-
 .small-btn {
     padding: 5px 10px;
-
     border-radius: 5px;
-
     border: 1px solid #374151;
-
     background: #1f2937;
-
     color: #cbd5e1;
-
     cursor: pointer;
-
     font-size: 12px;
 }
 
 
-.small-btn:hover {
-    background: #374151;
-}
-
-
-/* ==========================================================
-   CODE EDITOR
-   ========================================================== */
+/* EDITOR */
 
 .editor-wrapper {
     flex: 1;
-
     min-height: 0;
-
-    position: relative;
 }
-
 
 #code {
     width: 100%;
     height: 100%;
-
     display: block;
-
     resize: none;
-
     outline: none;
-
     border: 0;
-
     padding: 18px;
-
     background: #0b1220;
-
     color: #e2e8f0;
-
-    font-family:
-        "Cascadia Code",
-        "Fira Code",
-        Consolas,
-        monospace;
-
+    font-family: Consolas, "Courier New", monospace;
     font-size: 14px;
-
     line-height: 1.6;
-
     tab-size: 4;
 }
 
 
-#code::selection {
-    background: #334155;
-}
-
-
-/* ==========================================================
-   INPUT
-   ========================================================== */
+/* INPUT */
 
 .input-section {
     flex-shrink: 0;
-
-    border-top: 1px solid #263244;
-
-    background: #111827;
-
     padding: 12px;
+    background: #111827;
+    border-top: 1px solid #263244;
 }
-
 
 .section-title {
     font-size: 12px;
-
-    font-weight: 700;
-
-    color: #cbd5e1;
-
+    font-weight: bold;
     margin-bottom: 4px;
 }
 
-
 .section-help {
     font-size: 11px;
-
     color: #64748b;
-
     margin-bottom: 8px;
 }
 
-
 .input-box {
     width: 100%;
-
-    height: 90px;
-
-    resize: vertical;
-
+    height: 85px;
     min-height: 60px;
-
     max-height: 180px;
-
+    resize: vertical;
     padding: 10px;
-
-    outline: none;
-
     border: 1px solid #334155;
-
     border-radius: 6px;
-
+    outline: none;
     background: #0b1220;
-
     color: #e2e8f0;
-
     font-family: Consolas, monospace;
-
     font-size: 13px;
-
-    line-height: 1.5;
 }
 
 
-.input-box:focus {
-    border-color: #2563eb;
-}
-
-
-/* ==========================================================
-   OUTPUT
-   ========================================================== */
+/* OUTPUT */
 
 .output {
     flex: 1;
-
     min-height: 0;
-
     margin: 0;
-
     padding: 16px;
-
     overflow: auto;
-
     white-space: pre-wrap;
-
     word-break: break-word;
-
-    font-family:
-        "Cascadia Code",
-        "Fira Code",
-        Consolas,
-        monospace;
-
+    font-family: Consolas, monospace;
     font-size: 13px;
-
     line-height: 1.6;
-
     color: #dbeafe;
 }
 
 
-/* ==========================================================
-   PREVIEW
-   ========================================================== */
+/* PREVIEW */
 
 #preview {
     flex: 1;
-
     width: 100%;
-
     min-height: 0;
-
     border: 0;
-
     background: white;
 }
 
 
-/* ==========================================================
-   FOOTER
-   ========================================================== */
+/* FOOTER */
 
 .footer {
     min-height: 38px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 0 16px;
-
     background: #111827;
-
     border-top: 1px solid #263244;
-
     color: #64748b;
-
     font-size: 11px;
 }
 
-
 .runtime {
     white-space: pre-line;
-
     text-align: right;
 }
 
 
-/* ==========================================================
-   MOBILE
-   ========================================================== */
+/* MOBILE */
 
 @media (max-width: 900px) {
 
     .workspace {
         grid-template-columns: 1fr;
-
         grid-template-rows:
             minmax(550px, 1fr)
             minmax(550px, 1fr);
     }
-
-
-    .right-panel {
-        grid-template-rows:
-            1fr
-            1fr;
-    }
-
 }
 
-
 @media (max-width: 600px) {
-
-    .topbar {
-        padding: 0 12px;
-    }
-
 
     .brand-subtitle {
         display: none;
     }
 
-
     .status {
         display: none;
     }
-
-
-    .language-bar {
-        padding: 8px 12px;
-    }
-
 
     .shortcut {
         display: none;
     }
 
-
     .footer {
         display: none;
     }
-
 }
