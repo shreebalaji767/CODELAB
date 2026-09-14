@@ -18,30 +18,12 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install \
-    --no-cache-dir \
-    -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN python --version && \
-    gcc --version
+RUN python --version && gcc --version
 
 EXPOSE 10000
 
-CMD [
-    "gunicorn",
-    "--bind",
-    "0.0.0.0:10000",
-    "--workers",
-    "1",
-    "--threads",
-    "4",
-    "--timeout",
-    "30",
-    "--access-logfile",
-    "-",
-    "--error-logfile",
-    "-",
-    "app:app"
-]
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "1", "--threads", "4", "--timeout", "30", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
