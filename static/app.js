@@ -1,11 +1,6 @@
 "use strict";
 
 
-/* ============================================================
-   CODE LAB
-   ============================================================ */
-
-
 const DEFAULT_CODE = {
 
     python:
@@ -21,18 +16,14 @@ for i in range(1, 6):
 <html>
 
 <head>
-    <title>My Page</title>
+    <title>CodeLab</title>
 </head>
 
 <body>
 
     <h1>Hello CodeLab!</h1>
 
-    <p>This is my HTML page.</p>
-
-    <button onclick="alert('Hello!')">
-        Click Me
-    </button>
+    <p>This is HTML.</p>
 
 </body>
 
@@ -42,68 +33,41 @@ for i in range(1, 6):
 `body {
     font-family: Arial, sans-serif;
     padding: 30px;
-    background: #f5f5f5;
 }
 
 h1 {
     color: #2563eb;
 }
 
-button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 6px;
+p {
+    font-size: 18px;
 }`,
 
     javascript:
 `console.log("Hello CodeLab!");
 
-const name = "Shree";
+let a = 10;
+let b = 20;
 
-console.log("Name:", name);
-
-for (let i = 1; i <= 5; i++) {
-    console.log("Number:", i);
-}`,
+console.log("Answer:", a + b);`,
 
     c:
 `#include <stdio.h>
 
 int main(void)
 {
-    char name[100];
+    int age;
 
-    printf("Your name: ");
+    printf("Enter your age: ");
 
-    if (scanf("%99s", name) != 1)
-    {
-        return 1;
-    }
+    scanf("%d", &age);
 
-    printf("Hello %s!\\n", name);
+    printf("Your age is %d\\n", age);
 
     return 0;
 }`
 };
 
-
-const LANGUAGE_NAMES = {
-
-    python: "Python",
-
-    html: "HTML",
-
-    css: "CSS",
-
-    javascript: "JavaScript",
-
-    c: "C"
-};
-
-
-/* ============================================================
-   ELEMENTS
-   ============================================================ */
 
 const language =
     document.getElementById("language");
@@ -136,38 +100,21 @@ const runtime =
     document.getElementById("runtime");
 
 
-/* ============================================================
-   CURRENT LANGUAGE
-   ============================================================ */
-
 let currentLanguage =
     language.value || "python";
 
 
-/* ============================================================
-   STORAGE
-   ============================================================ */
+function storageKey(languageName) {
 
-function storageKey(name) {
-
-    return "codelab_" + name;
+    return "codelab_" + languageName;
 }
 
 
-function saveCurrentCode() {
-
-    localStorage.setItem(
-        storageKey(currentLanguage),
-        code.value
-    );
-}
-
-
-function loadCode(name) {
+function loadCode(languageName) {
 
     const saved =
         localStorage.getItem(
-            storageKey(name)
+            storageKey(languageName)
         );
 
     if (saved !== null) {
@@ -177,14 +124,19 @@ function loadCode(name) {
     } else {
 
         code.value =
-            DEFAULT_CODE[name] || "";
+            DEFAULT_CODE[languageName] || "";
     }
 }
 
 
-/* ============================================================
-   STATUS
-   ============================================================ */
+function saveCode() {
+
+    localStorage.setItem(
+        storageKey(currentLanguage),
+        code.value
+    );
+}
+
 
 function setStatus(
     message,
@@ -199,32 +151,15 @@ function setStatus(
 
     if (type) {
 
-        status.classList.add(
-            type
-        );
+        status.classList.add(type);
     }
 }
 
-
-/* ============================================================
-   OUTPUT
-   ============================================================ */
 
 function showOutput(text) {
 
     output.textContent =
         text || "";
-}
-
-
-function clearOutput() {
-
-    output.textContent =
-        "";
-
-    setStatus(
-        "Ready"
-    );
 }
 
 
@@ -238,11 +173,11 @@ function runHTML() {
         code.value;
 
     showOutput(
-        "HTML rendered successfully."
+        "HTML preview updated."
     );
 
     setStatus(
-        "HTML preview updated",
+        "HTML ready",
         "success"
     );
 }
@@ -253,9 +188,6 @@ function runHTML() {
    ============================================================ */
 
 function runCSS() {
-
-    const css =
-        code.value;
 
     const html =
 `<!DOCTYPE html>
@@ -268,7 +200,7 @@ function runCSS() {
 
 <style>
 
-${css}
+${code.value}
 
 </style>
 
@@ -278,17 +210,9 @@ ${css}
 
 <h1>CSS Preview</h1>
 
-<p>
-This page is using your CSS.
-</p>
+<p>This page is using your CSS.</p>
 
-<button>
-Example Button
-</button>
-
-<div class="box">
-Example Box
-</div>
+<button>Example Button</button>
 
 </body>
 
@@ -298,11 +222,11 @@ Example Box
         html;
 
     showOutput(
-        "CSS rendered successfully."
+        "CSS preview updated."
     );
 
     setStatus(
-        "CSS preview updated",
+        "CSS ready",
         "success"
     );
 }
@@ -314,11 +238,7 @@ Example Box
 
 function runJavaScript() {
 
-    const source =
-        code.value;
-
     const messages = [];
-
 
     const customConsole = {
 
@@ -394,9 +314,7 @@ function runJavaScript() {
             }
         }
 
-        return String(
-            value
-        );
+        return String(value);
     }
 
 
@@ -405,17 +323,14 @@ function runJavaScript() {
         const execute =
             new Function(
                 "console",
-                source
+                code.value
             );
 
         execute(
             customConsole
         );
 
-
-        if (
-            messages.length === 0
-        ) {
+        if (messages.length === 0) {
 
             showOutput(
                 "JavaScript finished successfully."
@@ -427,7 +342,6 @@ function runJavaScript() {
                 messages.join("\n")
             );
         }
-
 
         setStatus(
             "JavaScript finished",
@@ -451,31 +365,18 @@ function runJavaScript() {
 
 
 /* ============================================================
-   PYTHON / C SERVER EXECUTION
+   PYTHON + C
    ============================================================ */
 
 async function runServerLanguage() {
-
-    const selectedLanguage =
-        currentLanguage;
-
-    const source =
-        code.value;
-
-    const input =
-        stdin.value;
-
 
     setStatus(
         "Running..."
     );
 
-
     showOutput(
         "Running " +
-        LANGUAGE_NAMES[
-            selectedLanguage
-        ] +
+        currentLanguage +
         "..."
     );
 
@@ -496,13 +397,13 @@ async function runServerLanguage() {
                     body: JSON.stringify({
 
                         language:
-                            selectedLanguage,
+                            currentLanguage,
 
                         code:
-                            source,
+                            code.value,
 
                         stdin:
-                            input
+                            stdin.value
                     })
                 }
             );
@@ -510,22 +411,6 @@ async function runServerLanguage() {
 
         const data =
             await response.json();
-
-
-        if (!response.ok) {
-
-            showOutput(
-                data.error ||
-                "Server request failed."
-            );
-
-            setStatus(
-                "Error",
-                "error"
-            );
-
-            return;
-        }
 
 
         let result = "";
@@ -549,18 +434,23 @@ async function runServerLanguage() {
         }
 
 
+        if (data.error) {
+
+            if (result) {
+                result += "\n\n";
+            }
+
+            result +=
+                data.error;
+        }
+
+
         if (!result) {
 
-            if (data.success) {
-
-                result =
-                    "Program finished successfully.";
-
-            } else {
-
-                result =
-                    "Program finished with an error.";
-            }
+            result =
+                data.success
+                    ? "Program finished successfully."
+                    : "Program failed.";
         }
 
 
@@ -569,7 +459,10 @@ async function runServerLanguage() {
         );
 
 
-        if (data.success) {
+        if (
+            response.ok &&
+            data.success
+        ) {
 
             setStatus(
                 "Finished",
@@ -584,10 +477,13 @@ async function runServerLanguage() {
             );
         }
 
+
     } catch (error) {
 
         showOutput(
-            "Could not connect to the CodeLab server.\n\n" +
+            "CONNECTION ERROR\n\n" +
+            error.name +
+            ": " +
             error.message
         );
 
@@ -605,12 +501,11 @@ async function runServerLanguage() {
 
 async function runCode() {
 
-    saveCurrentCode();
+    saveCode();
 
 
     if (
-        currentLanguage ===
-        "html"
+        currentLanguage === "html"
     ) {
 
         runHTML();
@@ -620,8 +515,7 @@ async function runCode() {
 
 
     if (
-        currentLanguage ===
-        "css"
+        currentLanguage === "css"
     ) {
 
         runCSS();
@@ -631,8 +525,7 @@ async function runCode() {
 
 
     if (
-        currentLanguage ===
-        "javascript"
+        currentLanguage === "javascript"
     ) {
 
         runJavaScript();
@@ -642,10 +535,8 @@ async function runCode() {
 
 
     if (
-        currentLanguage ===
-        "python" ||
-        currentLanguage ===
-        "c"
+        currentLanguage === "python" ||
+        currentLanguage === "c"
     ) {
 
         await runServerLanguage();
@@ -661,22 +552,16 @@ async function runCode() {
 
 function changeLanguage() {
 
-    saveCurrentCode();
-
+    saveCode();
 
     currentLanguage =
         language.value;
-
 
     loadCode(
         currentLanguage
     );
 
-
-    showOutput(
-        ""
-    );
-
+    showOutput("");
 
     setStatus(
         "Ready"
@@ -684,16 +569,14 @@ function changeLanguage() {
 
 
     if (
-        currentLanguage ===
-        "html"
+        currentLanguage === "html"
     ) {
 
         preview.srcdoc =
             code.value;
 
     } else if (
-        currentLanguage ===
-        "css"
+        currentLanguage === "css"
     ) {
 
         runCSS();
@@ -710,7 +593,7 @@ function changeLanguage() {
 <h2>Browser Preview</h2>
 
 <p>
-HTML and CSS are displayed here.
+HTML and CSS preview appears here.
 </p>
 
 </body>
@@ -731,14 +614,9 @@ function resetCode() {
             currentLanguage
         ] || "";
 
+    saveCode();
 
-    saveCurrentCode();
-
-
-    showOutput(
-        ""
-    );
-
+    showOutput("");
 
     setStatus(
         "Code reset"
@@ -746,15 +624,13 @@ function resetCode() {
 
 
     if (
-        currentLanguage ===
-        "html"
+        currentLanguage === "html"
     ) {
 
         runHTML();
 
     } else if (
-        currentLanguage ===
-        "css"
+        currentLanguage === "css"
     ) {
 
         runCSS();
@@ -768,16 +644,11 @@ function resetCode() {
 
 function clearCode() {
 
-    code.value =
-        "";
+    code.value = "";
 
-    saveCurrentCode();
+    saveCode();
 
-
-    showOutput(
-        ""
-    );
-
+    showOutput("");
 
     setStatus(
         "Editor cleared"
@@ -786,7 +657,7 @@ function clearCode() {
 
 
 /* ============================================================
-   RUNTIME CHECK
+   RUNTIME
    ============================================================ */
 
 async function checkRuntime() {
@@ -798,10 +669,8 @@ async function checkRuntime() {
                 "/api/check"
             );
 
-
         const data =
             await response.json();
-
 
         runtime.textContent =
 `Python: ${data.python || "Unavailable"}
@@ -811,24 +680,6 @@ GCC: ${data.gcc || "Unavailable"}`;
 
         runtime.textContent =
             "Runtime check unavailable.";
-    }
-}
-
-
-/* ============================================================
-   KEYBOARD
-   ============================================================ */
-
-function keyboardHandler(event) {
-
-    if (
-        event.ctrlKey &&
-        event.key === "Enter"
-    ) {
-
-        event.preventDefault();
-
-        runCode();
     }
 }
 
@@ -863,35 +714,37 @@ clearButton.addEventListener(
 
 code.addEventListener(
     "input",
-    saveCurrentCode
+    saveCode
 );
 
 
 code.addEventListener(
     "keydown",
-    keyboardHandler
+    function(event) {
+
+        if (
+            event.ctrlKey &&
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            runCode();
+        }
+    }
 );
 
 
 /* ============================================================
-   START
+   INITIALIZE
    ============================================================ */
 
-function initialize() {
+loadCode(
+    currentLanguage
+);
 
-    currentLanguage =
-        language.value || "python";
+setStatus(
+    "Ready"
+);
 
-    loadCode(
-        currentLanguage
-    );
-
-    setStatus(
-        "Ready"
-    );
-
-    checkRuntime();
-}
-
-
-initialize();
+checkRuntime();
