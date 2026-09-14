@@ -3,246 +3,188 @@
 }
 
 
-html,
 body {
     margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-}
 
-
-body {
     font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-    background: #f1f1f1;
+    background: #f3f6f8;
 
-    color: #222;
+    color: #17212b;
 }
 
 
-/* ============================================================
+/* ========================================================
    TOP BAR
-   ============================================================ */
+   ======================================================== */
 
 .topbar {
+    min-height: 64px;
 
-    height: 58px;
+    background: #1f2937;
+
+    color: white;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: space-between;
+    gap: 16px;
 
-    padding: 0 18px;
-
-    background: #282a35;
-
-    color: white;
+    padding: 0 22px;
 }
 
 
-.logo {
-
+.brand {
     font-size: 24px;
 
     font-weight: 700;
-
-    color: #04aa6d;
 }
 
 
-.top-title {
-
-    font-size: 15px;
-
-    color: #ddd;
-}
-
-
-.top-right {
-
-    display: flex;
-
-    align-items: center;
-}
-
-
-.server-status {
-
-    font-size: 12px;
-
-    color: #aaa;
-}
-
-
-/* ============================================================
-   TOOLBAR
-   ============================================================ */
-
-.toolbar {
-
-    min-height: 58px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    padding: 9px 14px;
-
-    background: #ffffff;
-
-    border-bottom: 1px solid #ddd;
-}
-
-
-.language-control {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-
-.language-control label {
+.subtitle {
+    color: #cbd5e1;
 
     font-size: 14px;
-
-    font-weight: 600;
 }
 
 
-#language {
+.runtime {
+    margin-left: auto;
 
-    min-width: 150px;
+    font-size: 13px;
 
-    padding: 8px 10px;
+    color: #cbd5e1;
+}
 
-    border: 1px solid #aaa;
 
-    border-radius: 3px;
+/* ========================================================
+   MAIN
+   ======================================================== */
+
+.app {
+    width: min(1500px, 96%);
+
+    margin: 18px auto;
+}
+
+
+/* ========================================================
+   TOOLBAR
+   ======================================================== */
+
+.toolbar {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
 
     background: white;
 
-    font-size: 14px;
+    border: 1px solid #d8dee5;
+
+    border-radius: 8px;
+
+    padding: 12px;
+
+    margin-bottom: 14px;
+}
+
+
+.toolbar label {
+    font-weight: 700;
+}
+
+
+select,
+button {
+    min-height: 38px;
+
+    border: 1px solid #c8d0d9;
+
+    border-radius: 6px;
+
+    padding: 0 13px;
+
+    background: white;
 
     cursor: pointer;
-}
-
-
-.toolbar-buttons {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-}
-
-
-.toolbar-button,
-.run-button {
-
-    border: none;
-
-    border-radius: 4px;
-
-    padding: 9px 17px;
 
     font-size: 14px;
-
-    cursor: pointer;
 }
 
 
-.toolbar-button {
-
-    background: #e7e7e7;
-
-    color: #222;
+select {
+    min-width: 150px;
 }
 
 
-.toolbar-button:hover {
-
-    background: #d5d5d5;
+button:hover {
+    background: #eef2f6;
 }
 
 
-.run-button {
-
+button.run {
     background: #04aa6d;
 
     color: white;
 
+    border-color: #04aa6d;
+
     font-weight: 700;
 }
 
 
-.run-button:hover {
-
-    background: #059862;
+button.run:hover {
+    background: #078b5b;
 }
 
 
-/* ============================================================
-   MAIN
-   ============================================================ */
+button:disabled {
+    opacity: 0.6;
 
-.main-container {
+    cursor: wait;
+}
 
+
+/* ========================================================
+   WORKSPACE
+   ======================================================== */
+
+.workspace {
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        1.7fr
+        0.7fr
+        1.2fr;
 
-    height: calc(100vh - 158px);
-
-    min-height: 550px;
-
-    gap: 8px;
-
-    padding: 8px;
-
-    background: #f1f1f1;
+    gap: 14px;
 }
 
 
-.editor-side,
-.result-side {
-
-    min-width: 0;
-
-    min-height: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
+.panel,
+.preview-panel {
     background: white;
 
-    border: 1px solid #ccc;
+    border: 1px solid #d8dee5;
+
+    border-radius: 8px;
+
+    overflow: hidden;
 }
 
 
-/* ============================================================
-   SECTION HEADER
-   ============================================================ */
+/* ========================================================
+   PANEL TITLE
+   ======================================================== */
 
-.section-header {
-
-    height: 42px;
-
-    flex-shrink: 0;
+.panel-title {
+    height: 45px;
 
     display: flex;
 
@@ -250,87 +192,52 @@ body {
 
     justify-content: space-between;
 
-    padding: 0 12px;
+    padding: 0 13px;
 
-    background: #f5f5f5;
+    background: #eef2f5;
 
-    border-bottom: 1px solid #ccc;
-
-    font-size: 14px;
+    border-bottom: 1px solid #d8dee5;
 
     font-weight: 700;
 }
 
 
-.language-label {
+.hint {
+    color: #64748b;
 
     font-size: 12px;
 
     font-weight: 400;
-
-    color: #777;
 }
 
 
-.result-status {
+#languageBadge {
+    background: #1f2937;
 
-    font-size: 12px;
+    color: white;
 
-    font-weight: 400;
+    border-radius: 12px;
 
-    color: #777;
+    padding: 4px 9px;
+
+    font-size: 11px;
 }
 
 
-.result-status.success {
+/* ========================================================
+   TEXTAREAS
+   ======================================================== */
 
-    color: #008a58;
-}
-
-
-.result-status.error {
-
-    color: #d93025;
-}
-
-
-.result-status.running {
-
-    color: #b26a00;
-}
-
-
-/* ============================================================
-   EDITOR
-   ============================================================ */
-
-.editor-container {
-
-    flex: 1;
-
-    min-height: 0;
-}
-
-
-#code {
-
+textarea {
     width: 100%;
-
-    height: 100%;
-
-    display: block;
-
-    resize: none;
 
     border: 0;
 
     outline: none;
 
-    padding: 16px;
+    resize: vertical;
 
-    background: #ffffff;
-
-    color: #111;
+    padding: 14px;
 
     font-family:
         Consolas,
@@ -340,117 +247,33 @@ body {
     font-size: 14px;
 
     line-height: 1.55;
+}
+
+
+#code {
+    min-height: 540px;
+
+    background: #111827;
+
+    color: #f8fafc;
 
     tab-size: 4;
 }
 
 
-#code:focus {
+#input {
+    min-height: 540px;
 
-    box-shadow:
-        inset 0 0 0 2px #04aa6d;
+    background: #fbfdff;
 }
 
 
-/* ============================================================
-   INPUT
-   ============================================================ */
-
-.input-container {
-
-    flex-shrink: 0;
-
-    border-top: 1px solid #ccc;
-
-    background: #fafafa;
-}
-
-
-.input-header {
-
-    padding: 9px 12px 5px;
-
-    font-size: 13px;
-}
-
-
-.input-description {
-
-    margin-top: 3px;
-
-    color: #777;
-
-    font-size: 11px;
-
-    font-weight: 400;
-}
-
-
-#stdin {
-
-    width: calc(100% - 20px);
-
-    height: 75px;
-
-    margin: 0 10px 10px;
-
-    padding: 9px;
-
-    resize: vertical;
-
-    border: 1px solid #bbb;
-
-    border-radius: 3px;
-
-    outline: none;
-
-    background: white;
-
-    color: #222;
-
-    font-family:
-        Consolas,
-        "Courier New",
-        monospace;
-
-    font-size: 13px;
-}
-
-
-#stdin:focus {
-
-    border-color: #04aa6d;
-
-    box-shadow:
-        0 0 0 1px #04aa6d;
-}
-
-
-/* ============================================================
-   RESULT
-   ============================================================ */
-
-.result-container {
-
-    flex: 1;
-
-    min-height: 0;
-
-    background: #ffffff;
-
-    overflow: hidden;
-}
-
-
-#output {
-
-    width: 100%;
-
-    height: 100%;
+#result {
+    min-height: 540px;
 
     margin: 0;
 
-    padding: 16px;
+    padding: 14px;
 
     overflow: auto;
 
@@ -464,54 +287,53 @@ body {
         monospace;
 
     font-size: 14px;
-
-    line-height: 1.55;
-
-    color: #222;
 }
 
 
-.preview-container {
+/* ========================================================
+   STATUS
+   ======================================================== */
 
-    height: 45%;
+.status {
+    font-size: 12px;
 
-    min-height: 180px;
+    padding: 4px 8px;
 
-    display: flex;
+    border-radius: 10px;
 
-    flex-direction: column;
+    background: #dbeafe;
 
-    border-top: 1px solid #ccc;
+    color: #1e40af;
 }
 
 
-.preview-title {
+.status.success {
+    background: #dcfce7;
 
-    height: 36px;
-
-    flex-shrink: 0;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 0 12px;
-
-    background: #f5f5f5;
-
-    border-bottom: 1px solid #ccc;
-
-    font-size: 13px;
-
-    font-weight: 700;
+    color: #166534;
 }
 
 
-#preview {
+.status.error {
+    background: #fee2e2;
 
-    flex: 1;
+    color: #991b1b;
+}
 
+
+/* ========================================================
+   PREVIEW
+   ======================================================== */
+
+.preview-panel {
+    margin-top: 14px;
+}
+
+
+.preview-panel iframe {
     width: 100%;
+
+    height: 430px;
 
     border: 0;
 
@@ -519,133 +341,46 @@ body {
 }
 
 
-/* ============================================================
+.preview-panel button {
+    min-height: 30px;
+}
+
+
+/* ========================================================
    FOOTER
-   ============================================================ */
+   ======================================================== */
 
-.footer {
+footer {
+    text-align: center;
 
-    height: 42px;
+    color: #64748b;
 
-    display: flex;
+    padding: 22px;
 
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 14px;
-
-    background: #282a35;
-
-    color: #aaa;
-
-    font-size: 11px;
+    font-size: 13px;
 }
 
 
-#runtime-info {
-
-    text-align: right;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    max-width: 65%;
-}
-
-
-/* ============================================================
-   DISABLED INPUT
-   ============================================================ */
-
-.input-container.hidden {
-
-    display: none;
-}
-
-
-/* ============================================================
+/* ========================================================
    MOBILE
-   ============================================================ */
+   ======================================================== */
 
-@media (max-width: 900px) {
+@media (max-width: 1050px) {
 
-    .main-container {
-
+    .workspace {
         grid-template-columns: 1fr;
-
-        height: auto;
-
-        min-height: 0;
     }
 
 
-    .editor-side,
-    .result-side {
-
-        height: 600px;
+    #code,
+    #input,
+    #result {
+        min-height: 300px;
     }
 
 
-    .top-title {
-
+    .runtime {
         display: none;
     }
-}
 
-
-@media (max-width: 600px) {
-
-    .topbar {
-
-        height: 52px;
-    }
-
-
-    .logo {
-
-        font-size: 21px;
-    }
-
-
-    .toolbar {
-
-        align-items: stretch;
-
-        flex-direction: column;
-    }
-
-
-    .language-control {
-
-        width: 100%;
-    }
-
-
-    #language {
-
-        flex: 1;
-    }
-
-
-    .toolbar-buttons {
-
-        width: 100%;
-    }
-
-
-    .toolbar-button,
-    .run-button {
-
-        flex: 1;
-    }
-
-
-    .footer {
-
-        display: none;
-    }
 }
