@@ -1,20 +1,15 @@
 "use strict";
 
 
+/* ============================================================
+   DEFAULT PROGRAMS
+   ============================================================ */
+
 const DEFAULT_CODE = {
-
-    python:
-`name = input("Your name: ")
-
-print("Hello", name)
-
-for i in range(1, 6):
-    print("Number:", i)`,
 
     html:
 `<!DOCTYPE html>
 <html>
-
 <head>
     <title>CodeLab</title>
 </head>
@@ -23,11 +18,12 @@ for i in range(1, 6):
 
     <h1>Hello CodeLab!</h1>
 
-    <p>This is HTML.</p>
+    <p>This is an HTML program.</p>
 
 </body>
-
 </html>`,
+
+
 
     css:
 `body {
@@ -36,130 +32,245 @@ for i in range(1, 6):
 }
 
 h1 {
-    color: #2563eb;
+    color: #04aa6d;
 }
 
 p {
     font-size: 18px;
 }`,
 
+
+
     javascript:
-`console.log("Hello CodeLab!");
+`console.log("Hello from JavaScript!");
 
 let a = 10;
 let b = 20;
 
 console.log("Answer:", a + b);`,
 
+
+
+    python:
+`name = input("Enter your name: ")
+
+print("Hello,", name)
+
+for i in range(1, 6):
+    print("Number:", i)`,
+
+
+
     c:
 `#include <stdio.h>
 
 int main(void)
 {
+    char name[100];
     int age;
 
-    printf("Enter your age: ");
+    printf("Enter your name: ");
+    scanf("%99s", name);
 
+    printf("Enter your age: ");
     scanf("%d", &age);
 
-    printf("Your age is %d\\n", age);
+    printf("\\nHello %s!\\n", name);
+    printf("You are %d years old.\\n", age);
 
     return 0;
 }`
 };
 
 
-const language =
-    document.getElementById("language");
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
 
-const code =
-    document.getElementById("code");
+const languageSelect =
+    document.getElementById(
+        "language"
+    );
 
-const stdin =
-    document.getElementById("stdin");
+
+const codeEditor =
+    document.getElementById(
+        "code"
+    );
+
+
+const stdinEditor =
+    document.getElementById(
+        "stdin"
+    );
+
 
 const output =
-    document.getElementById("output");
+    document.getElementById(
+        "output"
+    );
+
 
 const preview =
-    document.getElementById("preview");
+    document.getElementById(
+        "preview"
+    );
+
 
 const runButton =
-    document.getElementById("run");
+    document.getElementById(
+        "run-button"
+    );
+
 
 const resetButton =
-    document.getElementById("reset");
+    document.getElementById(
+        "reset-button"
+    );
+
 
 const clearButton =
-    document.getElementById("clear");
-
-const status =
-    document.getElementById("status");
-
-const runtime =
-    document.getElementById("runtime");
+    document.getElementById(
+        "clear-button"
+    );
 
 
-let currentLanguage =
-    language.value || "python";
+const languageLabel =
+    document.getElementById(
+        "language-label"
+    );
 
 
-function storageKey(languageName) {
-
-    return "codelab_" + languageName;
-}
-
-
-function loadCode(languageName) {
-
-    const saved =
-        localStorage.getItem(
-            storageKey(languageName)
-        );
-
-    if (saved !== null) {
-
-        code.value = saved;
-
-    } else {
-
-        code.value =
-            DEFAULT_CODE[languageName] || "";
-    }
-}
+const resultStatus =
+    document.getElementById(
+        "result-status"
+    );
 
 
-function saveCode() {
+const inputContainer =
+    document.getElementById(
+        "input-container"
+    );
 
-    localStorage.setItem(
-        storageKey(currentLanguage),
-        code.value
+
+const serverStatus =
+    document.getElementById(
+        "server-status"
+    );
+
+
+const runtimeInfo =
+    document.getElementById(
+        "runtime-info"
+    );
+
+
+/* ============================================================
+   LOCAL STORAGE
+   ============================================================ */
+
+function storageKey(language) {
+
+    return (
+        "codelab_code_" +
+        language
     );
 }
 
 
-function setStatus(
-    message,
-    type = ""
-) {
+function saveCurrentCode() {
 
-    status.textContent =
-        message;
+    localStorage.setItem(
+        storageKey(
+            languageSelect.value
+        ),
+        codeEditor.value
+    );
+}
 
-    status.className =
-        "status";
 
-    if (type) {
+function loadCode(language) {
 
-        status.classList.add(type);
+    const saved =
+        localStorage.getItem(
+            storageKey(language)
+        );
+
+
+    if (saved !== null) {
+
+        codeEditor.value =
+            saved;
+
+    } else {
+
+        codeEditor.value =
+            DEFAULT_CODE[language] || "";
     }
 }
 
 
-function showOutput(text) {
+/* ============================================================
+   UI STATUS
+   ============================================================ */
+
+function setResultStatus(
+    text,
+    type = ""
+) {
+
+    resultStatus.textContent =
+        text;
+
+    resultStatus.className =
+        "result-status";
+
+
+    if (type) {
+
+        resultStatus.classList.add(
+            type
+        );
+    }
+}
+
+
+function setOutput(text) {
 
     output.textContent =
         text || "";
+}
+
+
+/* ============================================================
+   LANGUAGE MODE
+   ============================================================ */
+
+function updateLanguageUI() {
+
+    const language =
+        languageSelect.value;
+
+
+    languageLabel.textContent =
+        language.toUpperCase();
+
+
+    if (
+        language === "python" ||
+        language === "c"
+    ) {
+
+        inputContainer.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        inputContainer.classList.add(
+            "hidden"
+        );
+    }
 }
 
 
@@ -170,14 +281,16 @@ function showOutput(text) {
 function runHTML() {
 
     preview.srcdoc =
-        code.value;
+        codeEditor.value;
 
-    showOutput(
+
+    setOutput(
         "HTML preview updated."
     );
 
-    setStatus(
-        "HTML ready",
+
+    setResultStatus(
+        "Ready",
         "success"
     );
 }
@@ -189,7 +302,7 @@ function runHTML() {
 
 function runCSS() {
 
-    const html =
+    const documentHTML =
 `<!DOCTYPE html>
 
 <html>
@@ -200,7 +313,7 @@ function runCSS() {
 
 <style>
 
-${code.value}
+${codeEditor.value}
 
 </style>
 
@@ -210,23 +323,30 @@ ${code.value}
 
 <h1>CSS Preview</h1>
 
-<p>This page is using your CSS.</p>
+<p>
+This page is using your CSS.
+</p>
 
-<button>Example Button</button>
+<button>
+Example Button
+</button>
 
 </body>
 
 </html>`;
 
-    preview.srcdoc =
-        html;
 
-    showOutput(
+    preview.srcdoc =
+        documentHTML;
+
+
+    setOutput(
         "CSS preview updated."
     );
 
-    setStatus(
-        "CSS ready",
+
+    setResultStatus(
+        "Ready",
         "success"
     );
 }
@@ -240,9 +360,10 @@ function runJavaScript() {
 
     const messages = [];
 
+
     const customConsole = {
 
-        log: function (...args) {
+        log(...args) {
 
             messages.push(
                 args
@@ -251,7 +372,8 @@ function runJavaScript() {
             );
         },
 
-        info: function (...args) {
+
+        info(...args) {
 
             messages.push(
                 args
@@ -260,7 +382,8 @@ function runJavaScript() {
             );
         },
 
-        warn: function (...args) {
+
+        warn(...args) {
 
             messages.push(
                 "Warning: " +
@@ -270,7 +393,8 @@ function runJavaScript() {
             );
         },
 
-        error: function (...args) {
+
+        error(...args) {
 
             messages.push(
                 "Error: " +
@@ -287,14 +411,18 @@ function runJavaScript() {
         if (
             value === undefined
         ) {
+
             return "undefined";
         }
+
 
         if (
             value === null
         ) {
+
             return "null";
         }
+
 
         if (
             typeof value === "object"
@@ -303,7 +431,9 @@ function runJavaScript() {
             try {
 
                 return JSON.stringify(
-                    value
+                    value,
+                    null,
+                    2
                 );
 
             } catch {
@@ -314,6 +444,7 @@ function runJavaScript() {
             }
         }
 
+
         return String(value);
     }
 
@@ -323,41 +454,48 @@ function runJavaScript() {
         const execute =
             new Function(
                 "console",
-                code.value
+                codeEditor.value
             );
+
 
         execute(
             customConsole
         );
 
-        if (messages.length === 0) {
 
-            showOutput(
+        if (
+            messages.length === 0
+        ) {
+
+            setOutput(
                 "JavaScript finished successfully."
             );
 
         } else {
 
-            showOutput(
+            setOutput(
                 messages.join("\n")
             );
         }
 
-        setStatus(
-            "JavaScript finished",
+
+        setResultStatus(
+            "Finished",
             "success"
         );
 
+
     } catch (error) {
 
-        showOutput(
+        setOutput(
             error.name +
             ": " +
             error.message
         );
 
-        setStatus(
-            "JavaScript error",
+
+        setResultStatus(
+            "Error",
             "error"
         );
     }
@@ -365,20 +503,30 @@ function runJavaScript() {
 
 
 /* ============================================================
-   PYTHON + C
+   PYTHON / C API
    ============================================================ */
 
-async function runServerLanguage() {
+async function runCompiler() {
 
-    setStatus(
-        "Running..."
+    const language =
+        languageSelect.value;
+
+
+    setResultStatus(
+        "Running...",
+        "running"
     );
 
-    showOutput(
+
+    setOutput(
         "Running " +
-        currentLanguage +
+        language +
         "..."
     );
+
+
+    runButton.disabled =
+        true;
 
 
     try {
@@ -397,13 +545,13 @@ async function runServerLanguage() {
                     body: JSON.stringify({
 
                         language:
-                            currentLanguage,
+                            language,
 
                         code:
-                            code.value,
+                            codeEditor.value,
 
                         stdin:
-                            stdin.value
+                            stdinEditor.value
                     })
                 }
             );
@@ -416,63 +564,127 @@ async function runServerLanguage() {
         let result = "";
 
 
-        if (data.stdout) {
+        /* ----------------------------------------------------
+           STDOUT
+           ---------------------------------------------------- */
+
+        if (
+            data.stdout
+        ) {
 
             result +=
                 data.stdout;
         }
 
 
-        if (data.stderr) {
+        /* ----------------------------------------------------
+           STDERR
+           ---------------------------------------------------- */
+
+        if (
+            data.stderr
+        ) {
 
             if (result) {
-                result += "\n";
+
+                result +=
+                    "\n";
             }
+
 
             result +=
                 data.stderr;
         }
 
 
-        if (data.error) {
+        /* ----------------------------------------------------
+           API ERROR
+           ---------------------------------------------------- */
+
+        if (
+            data.error
+        ) {
 
             if (result) {
-                result += "\n\n";
+
+                result +=
+                    "\n\n";
             }
+
 
             result +=
                 data.error;
         }
 
 
+        /* ----------------------------------------------------
+           EMPTY RESULT
+           ---------------------------------------------------- */
+
         if (!result) {
 
-            result =
+            if (
                 data.success
-                    ? "Program finished successfully."
-                    : "Program failed.";
+            ) {
+
+                result =
+                    "Program finished successfully.";
+            } else {
+
+                result =
+                    "Program failed.";
+            }
         }
 
 
-        showOutput(
+        /* ----------------------------------------------------
+           DISPLAY
+           ---------------------------------------------------- */
+
+        setOutput(
             result
         );
 
 
+        /* ----------------------------------------------------
+           STATUS
+           ---------------------------------------------------- */
+
         if (
-            response.ok &&
+            data.timeout
+        ) {
+
+            setResultStatus(
+                "Timeout",
+                "error"
+            );
+
+        } else if (
+            data.phase === "compile"
+        ) {
+
+            setResultStatus(
+                data.success
+                    ? "Compiled"
+                    : "Compilation Error",
+                data.success
+                    ? "success"
+                    : "error"
+            );
+
+        } else if (
             data.success
         ) {
 
-            setStatus(
+            setResultStatus(
                 "Finished",
                 "success"
             );
 
         } else {
 
-            setStatus(
-                "Program error",
+            setResultStatus(
+                "Runtime Error",
                 "error"
             );
         }
@@ -480,32 +692,43 @@ async function runServerLanguage() {
 
     } catch (error) {
 
-        showOutput(
-            "CONNECTION ERROR\n\n" +
-            error.name +
-            ": " +
-            error.message
+        setOutput(
+`Could not connect to the CodeLab compiler.
+
+${error.name}: ${error.message}
+
+Check that the Render deployment is running.`
         );
 
-        setStatus(
-            "Connection error",
+
+        setResultStatus(
+            "Server Error",
             "error"
         );
+
+    } finally {
+
+        runButton.disabled =
+            false;
     }
 }
 
 
 /* ============================================================
-   RUN
+   MAIN RUN
    ============================================================ */
 
 async function runCode() {
 
-    saveCode();
+    saveCurrentCode();
+
+
+    const language =
+        languageSelect.value;
 
 
     if (
-        currentLanguage === "html"
+        language === "html"
     ) {
 
         runHTML();
@@ -515,7 +738,7 @@ async function runCode() {
 
 
     if (
-        currentLanguage === "css"
+        language === "css"
     ) {
 
         runCSS();
@@ -525,7 +748,7 @@ async function runCode() {
 
 
     if (
-        currentLanguage === "javascript"
+        language === "javascript"
     ) {
 
         runJavaScript();
@@ -535,14 +758,25 @@ async function runCode() {
 
 
     if (
-        currentLanguage === "python" ||
-        currentLanguage === "c"
+        language === "python" ||
+        language === "c"
     ) {
 
-        await runServerLanguage();
+        await runCompiler();
 
         return;
     }
+
+
+    setOutput(
+        "Unsupported language."
+    );
+
+
+    setResultStatus(
+        "Error",
+        "error"
+    );
 }
 
 
@@ -552,31 +786,40 @@ async function runCode() {
 
 function changeLanguage() {
 
-    saveCode();
+    saveCurrentCode();
 
-    currentLanguage =
-        language.value;
+
+    const language =
+        languageSelect.value;
+
 
     loadCode(
-        currentLanguage
+        language
     );
 
-    showOutput("");
 
-    setStatus(
+    updateLanguageUI();
+
+
+    setOutput(
+        ""
+    );
+
+
+    setResultStatus(
         "Ready"
     );
 
 
     if (
-        currentLanguage === "html"
+        language === "html"
     ) {
 
         preview.srcdoc =
-            code.value;
+            codeEditor.value;
 
     } else if (
-        currentLanguage === "css"
+        language === "css"
     ) {
 
         runCSS();
@@ -588,12 +831,17 @@ function changeLanguage() {
 
 <html>
 
-<body>
+<body style="
+    font-family: Arial;
+    padding: 20px;
+">
 
-<h2>Browser Preview</h2>
+<h2>
+Browser Preview
+</h2>
 
 <p>
-HTML and CSS preview appears here.
+HTML/CSS preview appears here.
 </p>
 
 </body>
@@ -609,28 +857,35 @@ HTML and CSS preview appears here.
 
 function resetCode() {
 
-    code.value =
-        DEFAULT_CODE[
-            currentLanguage
-        ] || "";
+    const language =
+        languageSelect.value;
 
-    saveCode();
 
-    showOutput("");
+    codeEditor.value =
+        DEFAULT_CODE[language] || "";
 
-    setStatus(
-        "Code reset"
+
+    saveCurrentCode();
+
+
+    setOutput(
+        ""
+    );
+
+
+    setResultStatus(
+        "Reset"
     );
 
 
     if (
-        currentLanguage === "html"
+        language === "html"
     ) {
 
         runHTML();
 
     } else if (
-        currentLanguage === "css"
+        language === "css"
     ) {
 
         runCSS();
@@ -644,20 +899,72 @@ function resetCode() {
 
 function clearCode() {
 
-    code.value = "";
+    codeEditor.value =
+        "";
 
-    saveCode();
 
-    showOutput("");
+    saveCurrentCode();
 
-    setStatus(
-        "Editor cleared"
+
+    setOutput(
+        ""
+    );
+
+
+    setResultStatus(
+        "Ready"
     );
 }
 
 
 /* ============================================================
-   RUNTIME
+   SERVER CHECK
+   ============================================================ */
+
+async function checkServer() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/health",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (
+            response.ok
+        ) {
+
+            serverStatus.textContent =
+                "● Server Online";
+
+            serverStatus.style.color =
+                "#04aa6d";
+
+        } else {
+
+            throw new Error(
+                "Server unavailable"
+            );
+        }
+
+
+    } catch {
+
+        serverStatus.textContent =
+            "● Server Offline";
+
+        serverStatus.style.color =
+            "#e74c3c";
+    }
+}
+
+
+/* ============================================================
+   RUNTIME CHECK
    ============================================================ */
 
 async function checkRuntime() {
@@ -666,29 +973,147 @@ async function checkRuntime() {
 
         const response =
             await fetch(
-                "/api/check"
+                "/api/runtime",
+                {
+                    cache: "no-store"
+                }
             );
+
 
         const data =
             await response.json();
 
-        runtime.textContent =
-`Python: ${data.python || "Unavailable"}
-GCC: ${data.gcc || "Unavailable"}`;
+
+        const python =
+            data.python ||
+            "Python unavailable";
+
+
+        const gcc =
+            data.gcc ||
+            "GCC unavailable";
+
+
+        const pythonShort =
+            python
+                .split("\n")[0];
+
+
+        const gccShort =
+            gcc
+                .split("\n")[0];
+
+
+        runtimeInfo.textContent =
+            pythonShort +
+            " | " +
+            gccShort;
+
+
+        if (
+            data.gcc_available
+        ) {
+
+            serverStatus.textContent =
+                "● Compiler Ready";
+
+            serverStatus.style.color =
+                "#04aa6d";
+        }
+
 
     } catch {
 
-        runtime.textContent =
-            "Runtime check unavailable.";
+        runtimeInfo.textContent =
+            "Runtime information unavailable.";
     }
 }
 
 
 /* ============================================================
-   EVENTS
+   KEYBOARD SHORTCUT
    ============================================================ */
 
-language.addEventListener(
+codeEditor.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.ctrlKey &&
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            runCode();
+        }
+
+
+        /*
+         * Make Tab insert spaces instead of
+         * moving focus away from the editor.
+         */
+
+        if (
+            event.key === "Tab"
+        ) {
+
+            event.preventDefault();
+
+
+            const start =
+                codeEditor.selectionStart;
+
+
+            const end =
+                codeEditor.selectionEnd;
+
+
+            codeEditor.value =
+                codeEditor.value.substring(
+                    0,
+                    start
+                )
+                +
+                "    "
+                +
+                codeEditor.value.substring(
+                    end
+                );
+
+
+            codeEditor.selectionStart =
+                start + 4;
+
+
+            codeEditor.selectionEnd =
+                start + 4;
+
+
+            saveCurrentCode();
+        }
+    }
+);
+
+
+/* ============================================================
+   INPUT EVENTS
+   ============================================================ */
+
+codeEditor.addEventListener(
+    "input",
+    function() {
+
+        saveCurrentCode();
+    }
+);
+
+
+/* ============================================================
+   BUTTON EVENTS
+   ============================================================ */
+
+languageSelect.addEventListener(
     "change",
     changeLanguage
 );
@@ -712,39 +1137,19 @@ clearButton.addEventListener(
 );
 
 
-code.addEventListener(
-    "input",
-    saveCode
-);
-
-
-code.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.ctrlKey &&
-            event.key === "Enter"
-        ) {
-
-            event.preventDefault();
-
-            runCode();
-        }
-    }
-);
-
-
 /* ============================================================
    INITIALIZE
    ============================================================ */
 
 loadCode(
-    currentLanguage
+    languageSelect.value
 );
 
-setStatus(
-    "Ready"
-);
+
+updateLanguageUI();
+
+
+checkServer();
+
 
 checkRuntime();
