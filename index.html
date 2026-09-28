@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="description" content="IDIOT → WIZARD: real JavaScript, Mathematics and DSA learning laboratory.">
+<title>IDIOT → WIZARD — Real JS + Maths + DSA Lab</title>
+<style>
+:root{--bg:#080b14;--panel:#101625;--panel2:#151c2e;--text:#eef2ff;--muted:#9ca8c4;--line:#27314a;--accent:#7c9cff;--good:#42d392;--bad:#ff6b7a;--warn:#ffc857;--shadow:0 12px 35px #0008}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#070a12,#0c1222 55%,#10162a);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:#18223a;color:var(--text);padding:9px 13px;border-radius:9px}button:hover{filter:brightness(1.18)}button.primary{background:var(--accent);color:#081022;border-color:transparent;font-weight:800}button.danger{background:#3a1720;border-color:#6a2634}.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}.side{position:sticky;top:0;height:100vh;padding:20px 14px;border-right:1px solid var(--line);background:#090e19}.brand{font-size:20px;font-weight:900;letter-spacing:-.5px;margin:0 8px 5px}.tag{color:var(--muted);font-size:12px;margin:0 8px 20px}.nav{display:grid;gap:6px}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button.active{background:#18213a;border-color:#2a385a}.main{min-width:0}.top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:#080c15eF;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.wrap{max-width:1500px;margin:auto;padding:24px}.page{display:none}.page.active{display:block}.hero{padding:28px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#121a2d,#0d1424);box-shadow:var(--shadow)}h1,h2,h3{line-height:1.15}h1{font-size:38px;margin:0 0 8px}.muted{color:var(--muted)}.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px}.stat{font-size:28px;font-weight:900}.pill{display:inline-block;padding:3px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}.bar{height:9px;background:#202a40;border-radius:20px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--accent)}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.lab{display:grid;grid-template-columns:1fr 1fr;gap:14px}.editor{width:100%;min-height:390px;resize:vertical;background:#070a10;color:#e8efff;border:1px solid #303b58;border-radius:10px;padding:15px;font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}.console{min-height:390px;max-height:620px;overflow:auto;background:#05070c;border:1px solid #303b58;border-radius:10px;padding:15px;white-space:pre-wrap;font:13px/1.55 ui-monospace,Consolas,monospace}.ok{color:var(--good)}.err{color:var(--bad)}.warn{color:var(--warn)}.teach{border-left:4px solid var(--accent);background:#111a2d;padding:13px;border-radius:8px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.field{display:grid;gap:5px}.field input,.field textarea,.field select{background:#0a1020;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px}.field input{min-width:130px}.table{width:100%;border-collapse:collapse}.table th,.table td{border-bottom:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}.challenge pre{white-space:pre-wrap}.hidden{display:none!important}.lesson{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0d1423}.lesson.done{border-color:#287f5a}.tree{max-height:550px;overflow:auto}.tree details{border-bottom:1px solid var(--line);padding:7px}.tree summary{cursor:pointer;font-weight:750}.tree ul{margin:8px 0 0 20px;color:var(--muted)}.kbd{font:12px ui-monospace;padding:2px 6px;border:1px solid var(--line);border-radius:5px;background:#0b1020}.notice{padding:12px;border-radius:10px;background:#201c0f;border:1px solid #5c4d20;color:#f3dda0}.dangerbox{padding:12px;border-radius:10px;background:#241116;border:1px solid #6b2936}.successbox{padding:12px;border-radius:10px;background:#0e241b;border:1px solid #246d4c}@media(max-width:1000px){.app{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.nav{grid-template-columns:repeat(3,1fr)}.lab,.g4,.g3{grid-template-columns:1fr 1fr}}@media(max-width:650px){.wrap{padding:13px}.nav{grid-template-columns:1fr 1fr}.g2,.g3,.g4,.lab{grid-template-columns:1fr}h1{font-size:29px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">🤡 IDIOT → WIZARD</div>
+  <div class="tag">No fake output. Break it. Debug it. Understand it.</div>
+  <div class="nav">
+    <button data-page="home" class="active">🏠 Dashboard</button>
+    <button data-page="curriculum">🧠 Curriculum</button>
+    <button data-page="js">⚡ JavaScript Lab</button>
+    <button data-page="math">🧮 Maths Lab</button>
+    <button data-page="dsa">🧱 DSA Judge</button>
+    <button data-page="bugs">💥 Bug Lab</button>
+    <button data-page="event">⏱ Event Loop</button>
+    <button data-page="memory">🧠 Memory</button>
+    <button data-page="progress">📈 Progress</button>
+    <button data-page="data">💾 Data</button>
+  </div>
+</aside>
+<main class="main">
+<header class="top"><strong id="pageTitle">Dashboard</strong><div class="toolbar"><span class="pill">STATIC • LOCAL ONLY</span><button id="themeBtn">Toggle UI</button></div></header>
+<div class="wrap">
+
+<section id="home" class="page active">
+<div class="hero"><h1>Welcome, magnificent idiot. 🧠💥</h1><p class="muted">This is a real browser laboratory. The browser actually executes your JavaScript, actually calculates maths, and actually judges DSA code. If your code explodes, the explosion is educational.</p><div class="toolbar"><button class="primary" data-go="js">Open JS Lab</button><button data-go="math">Open Maths Lab</button><button data-go="dsa">Open DSA Judge</button></div></div>
+<div class="grid g4" style="margin-top:14px">
+<div class="card"><div class="muted">JS mastery</div><div class="stat" id="jsStat">0%</div><div class="bar"><i id="jsBar"></i></div></div>
+<div class="card"><div class="muted">Maths mastery</div><div class="stat" id="mathStat">0%</div><div class="bar"><i id="mathBar"></i></div></div>
+<div class="card"><div class="muted">DSA mastery</div><div class="stat" id="dsaStat">0%</div><div class="bar"><i id="dsaBar"></i></div></div>
+<div class="card"><div class="muted">Errors survived</div><div class="stat" id="errStat">0</div></div>
+</div>
+<div class="grid g3" style="margin-top:14px">
+<div class="card"><h3>LEARN → BREAK → FIX</h3><p>Do not memorize pretty answers. Create ugly bugs and repair them.</p></div>
+<div class="card"><h3>REAL EXECUTION</h3><p>JS runs in an isolated Web Worker. Maths uses actual arithmetic. DSA tests execute your submitted function.</p></div>
+<div class="card"><h3>LOCAL-FIRST</h3><p>No account. No server database. Progress is kept in your browser and can be exported.</p></div>
+</div>
+<div class="notice" style="margin-top:14px"><b>Important engineering truth:</b> a static client-side judge cannot have truly secret hidden tests. This app never pretends otherwise. Test suites are shipped to your browser for learning.</div>
+</section>
+
+<section id="curriculum" class="page">
+<div class="hero"><h1>Full Curriculum</h1><p class="muted">The map is intentionally enormous. Tick topics only after you can explain and use them.</p></div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h2>JavaScript — from zero to dangerous</h2><div id="jsCurr" class="tree"></div></div>
+<div class="card"><h2>Mathematics — the machinery underneath DSA</h2><div id="mathCurr" class="tree"></div></div>
+<div class="card"><h2>DSA — from array potato to algorithm wizard</h2><div id="dsaCurr" class="tree"></div></div>
+<div class="card"><h2>Practical Engineering</h2><div id="engCurr" class="tree"></div></div>
+</div>
+</section>
+
+<section id="js" class="page">
+<div class="hero"><h1>⚡ JavaScript Lab</h1><p class="muted">Run real code. Syntax error? Runtime error? Wrong output? Good. We teach the corpse.</p></div>
+<div class="toolbar" style="margin:14px 0"><button class="primary" id="runJS">▶ Run</button><button id="stopJS">■ Stop</button><button id="clearJS">Clear</button><button id="explainJS">Explain last result</button><select id="jsPreset"><option value="">Presets…</option><option value="hello">Hello + types</option><option value="bug">Broken code</option><option value="async">Async ordering</option><option value="rec">Recursion</option><option value="closure">Closure</option><option value="reference">Reference trap</option></select></div>
+<div class="lab"><div><textarea id="jsCode" class="editor">// REAL JAVASCRIPT LAB
+console.log("Hello, idiot → wizard!");
+const numbers = [1, 2, 3, 4];
+console.log(numbers.map(n => n * 2));
+</textarea></div><div id="jsOut" class="console">Press Run. The browser will execute the code.</div></div>
+<div id="jsTeach" style="margin-top:14px"></div>
+</section>
+
+<section id="math" class="page">
+<div class="hero"><h1>🧮 Maths Lab</h1><p class="muted">Calculators are actual calculators. No pre-written answers pretending to be mathematics.</p></div>
+<div class="card" style="margin-top:14px"><div class="toolbar"><select id="mathTool"><option value="expr">Expression</option><option value="gcd">GCD / LCM</option><option value="prime">Prime / Factorization</option><option value="stats">Statistics</option><option value="quad">Quadratic equation</option><option value="mod">Modular arithmetic</option><option value="matrix">2×2 Matrix</option><option value="comb">Combinatorics</option><option value="percent">Percentage</option><option value="binary">Binary / Hex / Bitwise</option></select></div><div id="mathForm" style="margin-top:14px"></div><div id="mathResult" style="margin-top:14px"></div></div>
+</section>
+
+<section id="dsa" class="page">
+<div class="hero"><h1>🧱 DSA Judge</h1><p class="muted">You write the function. The browser supplies tests. Actual expected vs actual. Actual pass/fail.</p></div>
+<div class="toolbar" style="margin:14px 0"><select id="dsaChallenge"></select><button class="primary" id="runDSA">Run tests</button><button id="randomDSA">Random challenge</button></div>
+<div id="dsaInfo" class="card challenge"></div>
+<div class="lab" style="margin-top:14px"><textarea id="dsaCode" class="editor"></textarea><div id="dsaOut" class="console">Tests have not run.</div></div>
+<div id="dsaTeach" style="margin-top:14px"></div>
+</section>
+
+<section id="bugs" class="page">
+<div class="hero"><h1>💥 Bug Lab</h1><p class="muted">Every bug is a teacher wearing a clown costume.</p></div>
+<div id="bugList" class="grid g2" style="margin-top:14px"></div>
+</section>
+
+<section id="event" class="page">
+<div class="hero"><h1>⏱ Event Loop Laboratory</h1><p class="muted">Predict first. Then let the real browser tell you whether your brain lied.</p></div>
+<div class="card" style="margin-top:14px"><textarea id="eventCode" class="editor" style="min-height:250px">console.log("A");
+setTimeout(() => console.log("B - timer"), 0);
+Promise.resolve().then(() => console.log("C - microtask"));
+console.log("D");</textarea><div class="toolbar" style="margin-top:10px"><button class="primary" id="runEvent">Run real code</button><button id="clearEvent">Clear output</button></div><div id="eventOut" class="console" style="margin-top:10px">Expected by you? Write it down first. Then run.</div></div>
+</section>
+
+<section id="memory" class="page">
+<div class="hero"><h1>🧠 Memory & References</h1><p class="muted">The browser owns the real heap and garbage collector, so we teach observable reference behavior rather than drawing fake RAM diagrams and calling them reality.</p></div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>Reference identity</h3><pre class="console" style="min-height:180px">const a = {x: 1};
+const b = a;
+b.x = 99;
+console.log(a.x); // 99</pre><button class="primary" id="runMemory">Run experiment</button></div>
+<div class="card"><h3>Garbage collection</h3><p>JavaScript engines decide when unreachable objects are collected. You cannot demand “collect now” from ordinary browser JavaScript. We therefore separate observable reference behavior from implementation-dependent GC behavior.</p><div class="teach">Engineer rule: if your explanation requires knowing the exact GC moment, stop pretending. Measure what is observable and use documentation for engine internals.</div></div>
+</div><div id="memoryOut" class="console" style="margin-top:14px">No experiment yet.</div>
+</section>
+
+<section id="progress" class="page">
+<div class="hero"><h1>📈 Progress</h1><p class="muted">Progress is stored locally. No account required.</p></div><div id="progressBody" style="margin-top:14px"></div>
+</section>
+
+<section id="data" class="page">
+<div class="hero"><h1>💾 Your Data</h1><p class="muted">Export a JSON backup. Import it later. Nothing is uploaded by this app.</p></div>
+<div class="card" style="margin-top:14px"><div class="toolbar"><button class="primary" id="exportData">Export JSON</button><label><button>Import JSON</button><input id="importData" type="file" accept=".json" hidden></label><button class="danger" id="resetData">Reset local progress</button></div><div id="dataStatus" style="margin-top:14px"></div></div>
+</section>
+
+</div></main></div>
+
+<script>
+"use strict";
+const STORE_KEY="idiot-wizard-v1";
+const state=JSON.parse(localStorage.getItem(STORE_KEY)||'{"topics":{},"runs":0,"errors":0,"attempts":0,"theme":0,"notes":[]}');
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(state));updateStats()}
+function $(s){return document.querySelector(s)} function $all(s){return [...document.querySelectorAll(s)]}
+function esc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function go(page){$all(".page").forEach(x=>x.classList.toggle("active",x.id===page));$all(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===page));$("#pageTitle").textContent=({home:"Dashboard",curriculum:"Curriculum",js:"JavaScript Lab",math:"Maths Lab",dsa:"DSA Judge",bugs:"Bug Lab",event:"Event Loop",memory:"Memory",progress:"Progress",data:"Data"})[page]||page}
+$all("[data-page]").forEach(b=>b.onclick=()=>go(b.dataset.page));$all("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+$("#themeBtn").onclick=()=>{state.theme=state.theme?0:1;document.body.style.filter=state.theme?"saturate(.75) brightness(.9)":"";save()};
+
+const curriculum={
+js:["Programming foundations","ECMAScript and engines","let / const / var","Primitive types","Objects and property descriptors","Operators","Type conversion and coercion","Control flow","Functions and parameters","Higher-order functions","Recursion","Closures","Scope and hoisting","Arrays and array algorithms","Strings and Unicode / UTF-16","Number / BigInt / floating point","Math API","Dates / time / UTC","RegExp","Destructuring","Spread / rest","Prototypes","Classes","this / call / apply / bind","Iterators and generators","Symbols","Map / Set / WeakMap / WeakSet","Errors and stack traces","Callbacks","Event loop","Promises","async / await","Promise combinators","Memory / reachability / GC","ES modules","Node.js runtime","Filesystem / streams / buffers","Browser APIs","DOM","Events / delegation","Forms / validation","Fetch / HTTP / JSON","URL / History / Location","Cookies / Web Storage / IndexedDB","Workers / Service Workers","Canvas / Web Audio","WebSockets / WebRTC","Streams","Web Crypto","Security: XSS / CSRF / CORS / SOP","npm / package.json / semver","Bundlers / transpilers / source maps","Testing / assertions / mocks","Performance / profiling / rendering","Proxy / Reflect / metaprogramming","Typed arrays / ArrayBuffer / DataView","Intl / serialization","Atomics / SharedArrayBuffer","Advanced async iterators"],
+math:["Arithmetic and order of operations","Integers and negatives","Fractions and decimals","Percentages","Ratios and proportions","Factors and multiples","Prime numbers","GCD and LCM","Divisibility","Algebraic expressions","Equations","Inequalities","Functions and graphs","Coordinate geometry","Sequences","Series","Exponents and roots","Logarithms","Logic and truth tables","Sets","Relations and functions","Proof by induction","Contradiction and contrapositive","Counting","Permutations and combinations","Pigeonhole principle","Recurrences","Modular arithmetic","Euclidean algorithm","Extended Euclidean algorithm","Congruences","Fermat's little theorem","Probability","Conditional probability","Bayes theorem","Independence","Expected value and variance","Random variables","Distributions","Statistics","Mean / median / mode","Standard deviation","Correlation / regression","Vectors","Matrices","Linear systems","Determinants","Gaussian elimination","Eigenvalues / eigenvectors","Graph theory","Trees as mathematical objects","Limits","Derivatives","Integrals","Optimization","Numerical methods","Binary / hexadecimal / bitwise mathematics"],
+dsa:["Big-O / Omega / Theta","Best / average / worst case","Amortized analysis","Arrays","Prefix sums","Difference arrays","Sliding window","Two pointers","Kadane's algorithm","Matrix algorithms","String frequency","Palindrome","Anagrams","Substring search","KMP","Rabin-Karp","Z algorithm","Linked lists","Fast / slow pointers","Stacks","Expression evaluation","Monotonic stack","Queues","Deque","Priority queues","Hash tables","Hash functions and collisions","Binary trees","Tree traversals","BST","AVL trees","Red-black trees","Heaps","Tries","Segment trees","Fenwick trees","Graphs","BFS","DFS","Components","Cycle detection","Topological sorting","Dijkstra","Bellman-Ford","Floyd-Warshall","Minimum spanning tree","Kruskal","Prim","Disjoint Set Union","SCC","Bridges","Articulation points","Brute force","Divide and conquer","Greedy","Backtracking","Memoization","Dynamic programming","Bit manipulation","Randomized algorithms","Range queries","Network flow","Matching","Computational geometry","Advanced DP","Advanced string algorithms"],
+eng:["Debugging workflow","Reading stack traces","Test design","Assertions","Edge-case design","Property-based thinking","Benchmarking","Complexity measurement","Memory reasoning","Code review","Refactoring","Security fundamentals","Browser DevTools","Git and version control","Modules and project structure","Accessibility","Web performance","Capstone projects"]
+};
+function renderCurriculum(){for(const [id,items] of Object.entries(curriculum)){const el=$("#"+id+"Curr");if(!el)continue;el.innerHTML=items.map((x,i)=>'<label class="lesson"><input type="checkbox" data-topic="'+id+'::'+i+'" '+(state.topics[id+"::"+i]?"checked":"")+'> '+esc(x)+'</label>').join("")}$("#engCurr").innerHTML=curriculum.eng.map((x,i)=>'<label class="lesson"><input type="checkbox" data-topic="eng::'+i+'" '+(state.topics["eng::"+i]?"checked":"")+'> '+esc(x)+'</label>').join("");$all("[data-topic]").forEach(c=>c.onchange=()=>{state.topics[c.dataset.topic]=c.checked;save();renderCurriculum()})}
+renderCurriculum();
+
+const presets={
+hello:`const name = "wizard";
+const n = 42;
+console.log("name:", name);
+console.log("typeof n:", typeof n);
+console.log("2 + " + "2 =", 2 + 2);`,
+bug:`function add(a, b) {
+  return a + c;
+}
+console.log(add(2, 3));`,
+async:`console.log("A");
+setTimeout(() => console.log("B - timer"), 0);
+Promise.resolve().then(() => console.log("C - microtask"));
+console.log("D");`,
+rec:`function factorial(n) {
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
+}
+console.log(factorial(5));`,
+closure:`function counter() {
+  let n = 0;
+  return () => ++n;
+}
+const next = counter();
+console.log(next(), next(), next());`,
+reference:`const a = {x: 1};
+const b = a;
+b.x = 99;
+console.log("a.x =", a.x);
+console.log("a === b =", a === b);`
+};
+$("#jsPreset").onchange=e=>{if(presets[e.target.value])$("#jsCode").value=presets[e.target.value]};
+function formatVal(v){if(typeof v==="string")return v;try{return JSON.stringify(v,(k,x)=>typeof x==="bigint"?x+"n":x,2)}catch{return String(v)}}
+let worker=null;
+function teachError(msg,kind="Error"){state.errors++;save();const m=String(msg);let idiot="The code face-planted.";if(/SyntaxError/i.test(m)){kind="Syntax error";idiot="You broke the grammar. JavaScript is a strict little grammar goblin."}else if(/ReferenceError/i.test(m)){kind="Reference error";idiot="You called a name JavaScript cannot find. The variable is hiding under the bed."}else if(/TypeError/i.test(m)){kind="Type error";idiot="You asked a value to do something it cannot do. A banana cannot become a database server."}else if(/RangeError/i.test(m)){kind="Range error";idiot="Your value escaped the allowed range. Mathematics has thrown a chair."}return '<div class="dangerbox"><b>'+esc(kind)+'</b><p>'+esc(idiot)+'</p><div><b>Real error:</b><pre>'+esc(m)+'</pre></div><div><b>Engineer explanation:</b> Read the first useful stack-trace line, identify the operation and value involved, then reproduce the smallest failing case.</div><div class="toolbar" style="margin-top:8px"><button onclick="showHelp()">WHY?</button><button onclick="showFixTip()">SHOW FIX STRATEGY</button></div></div>'}
+window.showHelp=()=>alert("DEBUG METHOD:\n1. Read the first useful error line.\n2. Find the exact operation.\n3. Inspect the values/types.\n4. Reduce to a tiny example.\n5. Fix one cause.\n6. Run again.\n7. Add a regression test.");
+window.showFixTip=()=>alert("Do not randomly change code. State the expected behavior, find the first divergence, change the smallest necessary thing, then rerun.");
+function makeWorker(){const src=`self.onmessage=async e=>{const logs=[];const old={log:console.log,warn:console.warn,error:console.error,info:console.info};const fmt=v=>{try{return typeof v==="string"?v:JSON.stringify(v,(k,x)=>typeof x==="bigint"?x+"n":x,2)}catch{return String(v)}};for(const k of Object.keys(old))console[k]=(...a)=>logs.push({k,args:a.map(fmt)});try{const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;const fn=new AsyncFunction(e.data.code);const value=await fn();self.postMessage({ok:true,logs,value:fmt(value)})}catch(err){self.postMessage({ok:false,logs,error:String(err&&err.stack||err)})}};`;return new Worker(URL.createObjectURL(new Blob([src],{type:"text/javascript"})))}
+$("#runJS").onclick=()=>{if(worker)worker.terminate();worker=makeWorker();state.runs++;save();$("#jsOut").textContent="Running real JavaScript…";$("#jsTeach").innerHTML="";worker.onmessage=e=>{const d=e.data;let out=d.logs.map(x=>"["+x.k+"] "+x.args.join(" ")).join("\n");if(d.value!=="undefined")out+=(out?"\n":"")+"[return] "+d.value;$("#jsOut").textContent=out||"(no console output)";if(!d.ok)$("#jsTeach").innerHTML=teachError(d.error);else $("#jsTeach").innerHTML='<div class="successbox"><b>REAL EXECUTION COMPLETE.</b><p>No runtime exception escaped. That does not prove the logic is correct—tests and expected behavior still matter.</p></div>';worker.terminate();worker=null}};
+$("#stopJS").onclick=()=>{if(worker){worker.terminate();worker=null;$("#jsOut").textContent+="\n[stopped]";}};
+$("#clearJS").onclick=()=>{$("#jsOut").textContent="Cleared.";$("#jsTeach").innerHTML=""};
+$("#explainJS").onclick=()=>{const t=$("#jsTeach");t.innerHTML='<div class="teach"><b>Debug commentary:</b> First classify the result: syntax, runtime, or logic. A successful run only proves that the engine accepted and executed the program. For logic errors, write an invariant and test an edge case.</div>'};
+
+const mathForms={
+expr:'<div class="field"><label>Expression</label><input id="mExpr" value="(12 + 8) * 3 / 2"></div>',
+gcd:'<div class="row"><div class="field"><label>a</label><input id="ma" type="number" value="48"></div><div class="field"><label>b</label><input id="mb" type="number" value="18"></div></div>',
+prime:'<div class="field"><label>n</label><input id="mp" type="number" value="360"></div>',
+stats:'<div class="field"><label>Numbers (comma separated)</label><input id="ms" value="2,4,4,4,5,5,7,9"></div>',
+quad:'<div class="row"><div class="field"><label>a</label><input id="qa" value="1"></div><div class="field"><label>b</label><input id="qb" value="-5"></div><div class="field"><label>c</label><input id="qc" value="6"></div></div>',
+mod:'<div class="row"><div class="field"><label>a</label><input id="moa" value="7"></div><div class="field"><label>mod m</label><input id="mom" value="13"></div><div class="field"><label>power e</label><input id="moe" value="5"></div></div>',
+matrix:'<div class="row">'+["a","b","c","d"].map((x,i)=>'<div class="field"><label>'+x+'</label><input id="x'+x+'" value="'+([1,2,3,4][i])+'"></div>').join("")+'</div>',
+comb:'<div class="row"><div class="field"><label>n</label><input id="cn" value="10"></div><div class="field"><label>r</label><input id="cr" value="3"></div></div>',
+percent:'<div class="row"><div class="field"><label>value</label><input id="pv" value="250"></div><div class="field"><label>percent</label><input id="pp" value="18"></div></div>',
+binary:'<div class="row"><div class="field"><label>integer</label><input id="bi" value="42"></div><div class="field"><label>bit shift</label><input id="bs" value="1"></div></div>'
+};
+function showMathForm(){const t=$("#mathTool").value;$("#mathForm").innerHTML=mathForms[t]+'<button class="primary" id="calcMath" style="margin-top:12px">Calculate</button>';$("#calcMath").onclick=calcMath}
+$("#mathTool").onchange=showMathForm;showMathForm();
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a}
+function factor(n){n=Math.abs(n);const f=[];for(let p=2;p*p<=n;p++){while(n%p===0){f.push(p);n/=p}}if(n>1)f.push(n);return f}
+function fact(n){if(!Number.isInteger(n)||n<0||n>170)throw Error("factorial requires integer 0..170 for Number precision");let r=1;for(let i=2;i<=n;i++)r*=i;return r}
+function calcMath(){try{const t=$("#mathTool").value;let r;if(t==="expr"){const s=$("#mExpr").value;if(!/^[0-9+*/%().\s^-]+$/.test(s))throw Error("Expression calculator accepts only numeric arithmetic characters.");r=Function("return ("+s+")")()}else if(t==="gcd"){const a=+$("#ma").value,b=+$("#mb").value,g=gcd(a,b);r={gcd:g,lcm:g?Math.abs(a/g*b):0}}else if(t==="prime"){const n=Number($("#mp").value);r={prime:n>=2&&factor(n).length===1&&factor(n)[0]===n,factors:factor(n)}}else if(t==="stats"){const a=$("#ms").value.split(",").map(Number).filter(Number.isFinite).sort((x,y)=>x-y);if(!a.length)throw Error("Need at least one number.");const mean=a.reduce((x,y)=>x+y,0)/a.length;const med=a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;const variance=a.reduce((s,x)=>s+(x-mean)**2,0)/a.length;r={count:a.length,min:a[0],max:a[a.length-1],mean,median:med,variance,populationSD:Math.sqrt(variance)}}else if(t==="quad"){const a=+$("#qa").value,b=+$("#qb").value,c=+$("#qc").value;if(a===0)r={linear:b?[-c/b]:"identity/no solution"};else{const d=b*b-4*a*c;r=d<0?{discriminant:d,roots:"complex",realPart:-b/(2*a),imagPart:Math.sqrt(-d)/(2*a)}:{discriminant:d,roots:[(-b+Math.sqrt(d))/(2*a),(-b-Math.sqrt(d))/(2*a)]}}}else if(t==="mod"){const a=BigInt($("#moa").value),m=BigInt($("#mom").value),e=BigInt($("#moe").value);let base=((a%m)+m)%m,res=1n;for(let x=e;x>0n;x>>=1n){if(x&1n)res=res*base%m;base=base*base%m}r={normalized:String(((a%m)+m)%m),powerMod:String(res),gcd:String(gcd(Number(a),Number(m)))} }else if(t==="matrix"){const a=+$("#xa").value,b=+$("#xb").value,c=+$("#xc").value,d=+$("#xd").value;const det=a*d-b*c;r={determinant:det,inverse:det?[[d/det,-b/det],[-c/det,a/det]]:"undefined (determinant is zero)"}}else if(t==="comb"){const n=+$("#cn").value,rr=+$("#cr").value;if(!Number.isInteger(n)||!Number.isInteger(rr)||rr<0||n<0||rr>n)throw Error("Require integers with 0 ≤ r ≤ n.");r={nCr:fact(n)/(fact(rr)*fact(n-rr)),nPr:fact(n)/fact(n-rr)}}else if(t==="percent"){const v=+$("#pv").value,p=+$("#pp").value;r={percentValue:v*p/100,afterIncrease:v*(1+p/100),afterDecrease:v*(1-p/100)}}else if(t==="binary"){const n=Number($("#bi").value),s=Number($("#bs").value);r={binary:n.toString(2),hex:n.toString(16),leftShift:n<<s,rightShift:n>>s,and1:n&1,or1:n|1,xor1:n^1}}$("#mathResult").innerHTML='<div class="successbox"><pre>'+esc(formatVal(r))+'</pre></div>'}catch(e){$("#mathResult").innerHTML=teachError(e.message,"Mathematical input/calculation error")}}
+function dsaTests(name){const T={
+sum:{title:"Array Sum",signature:"sumArray(arr)",prompt:"Return the sum of every number in arr.",starter:"function sumArray(arr) {\n  // write code\n}",tests:[[[],0],[[1,2,3,4],10],[[-2,5,-1],2],[[1000000],1000000]]},
+max:{title:"Maximum",signature:"maxArray(arr)",prompt:"Return the largest number. Input is non-empty.",starter:"function maxArray(arr) {\n  // write code\n}",tests:[[[3,1,9,2],9],[[-5,-2,-9],-2],[[7],7],[[0,0,0],0]]},
+pal:{title:"Palindrome",signature:"isPalindrome(s)",prompt:"Return true if s reads identically forward and backward. Compare exact characters.",starter:"function isPalindrome(s) {\n  // write code\n}",tests:[["racecar",true],["hello",false],["",true],["aa",true],["ab",false]]},
+binary:{title:"Binary Search",signature:"binarySearch(arr,target)",prompt:"Return the index of target in sorted arr, or -1.",starter:"function binarySearch(arr,target) {\n  // write code\n}",tests:[[[1,3,5,7],5,2],[[1,3,5,7],2,-1],[[4],4,0],[[-5,-2,0,9],-5,0]]}
+};return T[name]}
+const dsaNames=["sum","max","pal","binary"];$("#dsaChallenge").innerHTML=dsaNames.map(x=>'<option value="'+x+'">'+dsaTests(x).title+'</option>').join("");
+function loadDSA(){const t=dsaTests($("#dsaChallenge").value);$("#dsaInfo").innerHTML='<h2>'+esc(t.title)+'</h2><p>'+esc(t.prompt)+'</p><p><span class="pill">Signature: '+esc(t.signature)+'</span> <span class="pill">'+t.tests.length+' local tests</span></p>';$("#dsaCode").value=t.starter;$("#dsaOut").textContent="Tests have not run.";$("#dsaTeach").innerHTML=""}$("#dsaChallenge").onchange=loadDSA;loadDSA();
+$("#randomDSA").onclick=()=>{$("#dsaChallenge").value=dsaNames[Math.floor(Math.random()*dsaNames.length)];loadDSA()};
+$("#runDSA").onclick=()=>{const name=$("#dsaChallenge").value,t=dsaTests(name),code=$("#dsaCode").value;let fn;try{fn=Function("return ("+code+";"+t.signature.split("(")[0]+")")()}catch(e){$("#dsaOut").textContent=e.stack||String(e);$("#dsaTeach").innerHTML=teachError(e.stack||e);return}let pass=0,lines=[];for(let i=0;i<t.tests.length;i++){const x=t.tests[i],args=name==="binary"?[x[0],x[1]]:[x[0]];const expected=name==="binary"?x[2]:x[1];try{const actual=fn(...structuredClone(args));const ok=JSON.stringify(actual)===JSON.stringify(expected);if(ok)pass++;lines.push((ok?"PASS ":"FAIL ")+"#"+(i+1)+" expected="+formatVal(expected)+" actual="+formatVal(actual))}catch(e){lines.push("ERROR #"+(i+1)+" "+(e.stack||e))}}state.attempts++;save();$("#dsaOut").textContent=lines.join("\n");const ok=pass===t.tests.length;$("#dsaTeach").innerHTML=ok?'<div class="successbox"><b>ALL TESTS PASSED.</b><p>Now ask: what is the time complexity, space complexity, invariant, and which edge case would break a careless implementation?</p></div>':'<div class="dangerbox"><b>'+pass+"/"+t.tests.length+' passed.</b><p>This is a real wrong answer. Do not patch the expected output. Find the first failing input and reason from the invariant.</p><p><b>Common DSA causes:</b> wrong initialization, wrong loop condition, off-by-one, empty/single input, duplicates, negative values, pointer movement, or incorrect complexity.</p></div>'};
+
+const bugs=[
+["Syntax error",`const x = (2 + 3;`,"The parser cannot build valid syntax. Count delimiters and read the reported location."],
+["Reference error",`console.log(total);\nconst total = 10;`,"The binding exists lexically but is in the temporal dead zone before initialization."],
+["Type error",`const n = 42;\nn.toUpperCase();`,"Number does not provide the string method you called."],
+["Off-by-one",`const a=[10,20,30];\nfor(let i=0;i<=a.length;i++) console.log(a[i]);`,"<= runs one iteration too far; the last access becomes undefined."],
+["Mutation trap",`const a=[1,2,3];\nconst b=a;\nb.push(4);\nconsole.log(a);`,"a and b reference the same array object."],
+["Async trap",`console.log("A");\nsetTimeout(()=>console.log("B"),0);\nPromise.resolve().then(()=>console.log("C"));\nconsole.log("D");`,"Synchronous code finishes first; promise reactions run as microtasks before timers."],
+["Wrong base case",`function f(n){ return n*f(n-1); }\nconsole.log(f(3));`,"Recursion needs a terminating base case and a step that moves toward it."],
+["Precision trap",`console.log(0.1 + 0.2);\nconsole.log((0.1+0.2)===0.3);`,"Binary floating-point cannot represent many decimal fractions exactly."]
+];
+$("#bugList").innerHTML=bugs.map((b,i)=>'<div class="card"><h3>'+esc(b[0])+'</h3><pre class="console" style="min-height:150px">'+esc(b[1])+'</pre><button class="primary" onclick="runBug('+i+')">Break it for real</button><div id="bug'+i+'" style="margin-top:10px"></div></div>').join("");
+window.runBug=async i=>{const code=bugs[i][1],w=makeWorker();$("#bug"+i).textContent="Running…";w.onmessage=e=>{$("#bug"+i).innerHTML='<pre class="console" style="min-height:80px">'+esc(e.data.logs.map(x=>x.args.join(" ")).join("\n")+(e.data.error?"\n"+e.data.error:""))+'</pre><div class="teach"><b>Why:</b> '+esc(bugs[i][2])+'</div>';w.terminate()} ;w.postMessage({code})};
+
+$("#runEvent").onclick=()=>{const w=makeWorker();$("#eventOut").textContent="Running…";w.onmessage=e=>{$("#eventOut").textContent=e.data.logs.map(x=>x.args.join(" ")).join("\n")+(e.data.error?"\n"+e.data.error:"");w.terminate()};w.postMessage({code:$("#eventCode").value})};
+$("#clearEvent").onclick=()=>$("#eventOut").textContent="Cleared.";
+$("#runMemory").onclick=()=>{const a={x:1},b=a;b.x=99;$("#memoryOut").textContent="a.x after b.x=99 → "+a.x+"\na === b → "+(a===b)+"\n\nReal observable lesson: object assignment copies the reference, not the object."};
+
+function updateStats(){const count=Object.keys(state.topics).length,done=Object.values(state.topics).filter(Boolean).length;const pct=(prefix)=>{const n=curriculum[prefix].length;const d=curriculum[prefix].filter((_,i)=>state.topics[prefix+"::"+i]).length;return Math.round(d/n*100)};const j=pct("js"),m=pct("math"),d=pct("dsa");$("#jsStat").textContent=j+"%";$("#mathStat").textContent=m+"%";$("#dsaStat").textContent=d+"%";$("#jsBar").style.width=j+"%";$("#mathBar").style.width=m+"%";$("#dsaBar").style.width=d+"%";$("#errStat").textContent=state.errors;$("#progressBody").innerHTML='<div class="grid g4"><div class="card"><b>Topics checked</b><div class="stat">'+done+'</div></div><div class="card"><b>JS</b><div class="stat">'+j+'%</div></div><div class="card"><b>Maths</b><div class="stat">'+m+'%</div></div><div class="card"><b>DSA</b><div class="stat">'+d+'%</div></div></div><div class="card" style="margin-top:14px"><p>Real JS runs: '+state.runs+' • DSA attempts: '+state.attempts+' • Recorded errors: '+state.errors+'</p></div>'}
+updateStats();
+
+$("#exportData").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="idiot-wizard-progress.json";a.click();URL.revokeObjectURL(a.href);$("#dataStatus").innerHTML='<div class="successbox">Backup exported.</div>'};
+$("#importData").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x||typeof x!=="object"||!x.topics)throw Error("Not an IDIOT → WIZARD backup.");localStorage.setItem(STORE_KEY,JSON.stringify(x));location.reload()}catch(err){$("#dataStatus").innerHTML='<div class="dangerbox">'+esc(err.message)+'</div>'}};r.readAsText(f)};
+$("#resetData").onclick=()=>{if(confirm("Delete local progress? This cannot be undone unless you exported a backup.")){localStorage.removeItem(STORE_KEY);location.reload()}};
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+</script>
+</body>
+</html>
